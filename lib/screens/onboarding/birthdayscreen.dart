@@ -48,7 +48,7 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                     height: 16,
                   ),
                   LinearProgressIndicator(
-                    value: 22 / 100,
+                    value: 44 / 100,
                     color: Color(0xFFe94158),
                     backgroundColor: Color(0xFFE3E5E5),
                   ),
