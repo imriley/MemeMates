@@ -63,7 +63,7 @@ class _GenderScreenState extends State<GenderScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 16,
+                  height: 24,
                 ),
                 TextButton(
                   onPressed: () {
