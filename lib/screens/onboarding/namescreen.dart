@@ -151,7 +151,7 @@ class _NameScreenState extends State<NameScreen> {
                     ),
                   ),
                   child: Text(
-                    'Send Verification Code',
+                    'Continue',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
