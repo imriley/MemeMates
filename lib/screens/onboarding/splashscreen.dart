@@ -1,10 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:mememates/screens/onboarding/emailaddressscreen.dart';
+import 'package:mememates/screens/onboarding/namescreen.dart';
 import 'dart:io' show Platform;
 
-class Splashscreen extends StatelessWidget {
-  Splashscreen({super.key});
+import 'package:mememates/utils/firebase.dart';
+
+class SplashScreen extends StatelessWidget {
+  SplashScreen({super.key});
 
   final logo = SvgPicture.asset(
     'assets/logo.svg',
@@ -39,7 +44,14 @@ class Splashscreen extends StatelessWidget {
               Column(
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => const EmailAddressScreen(),
+                        ),
+                      );
+                    },
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFE94158),
                       minimumSize: Size(double.infinity, 50),
@@ -104,7 +116,25 @@ class Splashscreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            dynamic data = await FireAuth.signInWithGoogle();
+                            if (data.runtimeType == String || data == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    data,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => const NameScreen(),
+                                ),
+                              );
+                            }
+                          },
                           style: OutlinedButton.styleFrom(
                             minimumSize: Size(double.infinity, 50),
                             side: BorderSide(
