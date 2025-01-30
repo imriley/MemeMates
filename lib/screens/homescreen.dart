@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mememates/screens/onboarding/emailaddressscreen.dart';
 import 'package:mememates/screens/onboarding/splashscreen.dart';
 
 class Homescreen extends StatefulWidget {
@@ -11,6 +12,6 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
-    return Splashscreen();
+    return EmailAddressScreen();
   }
 }
