@@ -66,7 +66,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                     height: 16,
                   ),
                   LinearProgressIndicator(
-                    value: 12.5 / 100,
+                    value: 11 / 100,
                     color: Color(0xFFe94158),
                     backgroundColor: Color(0xFFE3E5E5),
                   ),
