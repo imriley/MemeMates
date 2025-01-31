@@ -1,6 +1,8 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mememates/screens/onboarding/verifyemailscreen.dart';
+import 'package:mememates/utils/emailverification.dart';
 
 class EmailAddressScreen extends StatefulWidget {
   const EmailAddressScreen({super.key});
@@ -21,7 +23,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
     }
   }
 
-  void handleSubmit() {
+  void handleSubmit() async {
     bool isInvalidEmail = !RegExp(
             r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
         .hasMatch(emailController.text);
@@ -33,6 +35,21 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
       setState(() {
         hasEmailError = false;
       });
+      bool isEmailSent = await EmailVerification().send(emailController.text);
+      if (isEmailSent) {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => VerifyEmailScreen(
+              emailaddress: emailController.text,
+            ),
+          ),
+        );
+      } else {
+        setState(() {
+          hasEmailError = true;
+        });
+      }
     }
   }
 
@@ -46,7 +63,9 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
             icon: Icon(
               IconsaxOutline.arrow_left_2,
             ),

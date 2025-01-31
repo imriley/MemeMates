@@ -2,19 +2,30 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mememates/screens/onboarding/namescreen.dart';
+import 'package:mememates/utils/emailverification.dart';
 
-class VerifyEmailScreen extends StatelessWidget {
-  const VerifyEmailScreen({super.key});
+class VerifyEmailScreen extends StatefulWidget {
+  String emailaddress;
+  VerifyEmailScreen({super.key, required this.emailaddress});
+
+  @override
+  State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
+}
+
+class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
+  List<String> otp = ["", "", "", "", "", ""];
+  bool hasOTPError = false;
+
+  void removeFocus() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    void removeFocus() {
-      FocusScopeNode currentFocus = FocusScope.of(context);
-      if (!currentFocus.hasPrimaryFocus) {
-        currentFocus.unfocus();
-      }
-    }
-
     return GestureDetector(
       onTap: removeFocus,
       child: Scaffold(
@@ -23,7 +34,9 @@ class VerifyEmailScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
             icon: Icon(
               IconsaxOutline.arrow_left_2,
             ),
@@ -71,11 +84,10 @@ class VerifyEmailScreen extends StatelessWidget {
                     height: 2,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                         child: Text(
-                          "randomassgmailaccountofsomemotherfuckingbitchassperson@gmail.com", // TODO: Replace with user email
+                          widget.emailaddress,
                           style: TextStyle(
                             fontSize: 16,
                             // fontWeight: FontWeight.bold,
@@ -86,7 +98,9 @@ class VerifyEmailScreen extends StatelessWidget {
                         padding: EdgeInsets.only(
                           left: 4,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                         sizeStyle: CupertinoButtonSize.small,
                         child: Text(
                           "Change email address?",
@@ -106,12 +120,16 @@ class VerifyEmailScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        height: 72,
-                        width: 72,
+                        height: 56,
+                        width: 56,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasOTPError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              otp[0] = value;
                             }
                           },
                           decoration: InputDecoration(
@@ -132,7 +150,9 @@ class VerifyEmailScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          style: Theme.of(context).textTheme.headlineMedium,
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           inputFormatters: [
@@ -142,12 +162,19 @@ class VerifyEmailScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 72,
-                        width: 72,
+                        height: 56,
+                        width: 56,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasOTPError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              otp[1] = value;
+                            } else if (value.isEmpty) {
+                              FocusScope.of(context).previousFocus();
+                              otp[1] = '';
                             }
                           },
                           decoration: InputDecoration(
@@ -168,7 +195,9 @@ class VerifyEmailScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          style: Theme.of(context).textTheme.headlineMedium,
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           inputFormatters: [
@@ -178,12 +207,19 @@ class VerifyEmailScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 72,
-                        width: 72,
+                        height: 56,
+                        width: 56,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasOTPError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              otp[2] = value;
+                            } else if (value.isEmpty) {
+                              FocusScope.of(context).previousFocus();
+                              otp[2] = '';
                             }
                           },
                           decoration: InputDecoration(
@@ -204,7 +240,9 @@ class VerifyEmailScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          style: Theme.of(context).textTheme.headlineMedium,
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           inputFormatters: [
@@ -214,10 +252,21 @@ class VerifyEmailScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 72,
-                        width: 72,
+                        height: 56,
+                        width: 56,
                         child: TextField(
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            setState(() {
+                              hasOTPError = false;
+                            });
+                            if (value.length == 1) {
+                              FocusScope.of(context).nextFocus();
+                              otp[3] = value;
+                            } else if (value.isEmpty) {
+                              FocusScope.of(context).previousFocus();
+                              otp[3] = '';
+                            }
+                          },
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -236,7 +285,98 @@ class VerifyEmailScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          style: Theme.of(context).textTheme.headlineMedium,
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(1),
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 56,
+                        width: 56,
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              hasOTPError = false;
+                            });
+                            if (value.length == 1) {
+                              FocusScope.of(context).nextFocus();
+                              otp[4] = value;
+                            } else if (value.isEmpty) {
+                              FocusScope.of(context).previousFocus();
+                              otp[4] = '';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xFF7D7D7D),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xFF7D7D7D),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(1),
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 56,
+                        width: 56,
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              hasOTPError = false;
+                            });
+                            if (value.length == 1) {
+                              otp[5] = value;
+                            } else if (value.isEmpty) {
+                              FocusScope.of(context).previousFocus();
+                              otp[5] = '';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xFF7D7D7D),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xFF7D7D7D),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           inputFormatters: [
@@ -246,7 +386,19 @@ class VerifyEmailScreen extends StatelessWidget {
                         ),
                       ),
                     ],
-                  )
+                  ),
+                  hasOTPError
+                      ? Container(
+                          margin: EdgeInsets.only(top: 8),
+                          child: Text(
+                            "Please enter a valid OTP.",
+                            style: TextStyle(
+                              color: Color(0xFFE94158),
+                              fontSize: 16,
+                            ),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
               Container(
@@ -254,7 +406,29 @@ class VerifyEmailScreen extends StatelessWidget {
                   bottom: 32,
                 ),
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (otp.any((element) => element.isEmpty)) {
+                      setState(() {
+                        hasOTPError = true;
+                      });
+                    } else {
+                      bool isVerified = await EmailVerification().verify(
+                        otp.join(''),
+                      );
+                      if (!isVerified) {
+                        setState(() {
+                          hasOTPError = true;
+                        });
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => NameScreen(),
+                          ),
+                        );
+                      }
+                    }
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: Color(0xFFE94158),
                     padding: EdgeInsets.all(
