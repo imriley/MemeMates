@@ -6,7 +6,7 @@ import 'package:mememates/screens/onboarding/emailaddressscreen.dart';
 import 'package:mememates/screens/onboarding/namescreen.dart';
 import 'dart:io' show Platform;
 
-import 'package:mememates/utils/firebase.dart';
+import 'package:mememates/utils/authentication/firebase.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});

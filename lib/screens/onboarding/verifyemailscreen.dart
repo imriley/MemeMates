@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mememates/screens/onboarding/namescreen.dart';
-import 'package:mememates/utils/emailverification.dart';
+import 'package:mememates/utils/authentication/emailverification.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   String emailaddress;

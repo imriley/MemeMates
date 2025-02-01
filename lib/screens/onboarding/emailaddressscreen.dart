@@ -2,7 +2,7 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mememates/screens/onboarding/verifyemailscreen.dart';
-import 'package:mememates/utils/emailverification.dart';
+import 'package:mememates/utils/authentication/emailverification.dart';
 
 class EmailAddressScreen extends StatefulWidget {
   const EmailAddressScreen({super.key});
