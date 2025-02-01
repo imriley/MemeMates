@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mememates/models/User.dart';
 
 class UserProvider extends ChangeNotifier {
-  User? _user;
+  User? _user = User();
 
   User? get user => _user;
 
