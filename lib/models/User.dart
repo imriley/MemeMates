@@ -2,6 +2,7 @@ import 'package:mememates/models/MoodBoard.dart';
 
 class User {
   String? uid; // Unique user ID
+  String? email;
   String? name;
   DateTime? dateOfBirth;
   int? age;
@@ -16,6 +17,7 @@ class User {
 
   User({
     this.uid,
+    this.email,
     this.name,
     this.dateOfBirth,
     this.age,
@@ -32,6 +34,7 @@ class User {
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
+      'email': email,
       'name': name,
       'dateOfBirth': dateOfBirth,
       'age': age,
@@ -49,6 +52,7 @@ class User {
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       uid: map['uid'],
+      email: map['email'],
       name: map['name'],
       dateOfBirth: map['dateOfBirth'],
       age: map['age'],
@@ -61,6 +65,38 @@ class User {
           map['moodBoard'] != null ? MoodBoard.fromMap(map['moodBoard']) : null,
       profileAnthem: map['profileAnthem'],
       matches: List<String>.from(map['matches']),
+    );
+  }
+
+  User copyWith({
+    String? uid,
+    String? email,
+    String? name,
+    DateTime? dateOfBirth,
+    int? age,
+    String? gender,
+    String? preferenceGender,
+    int? preferenceAgeMin,
+    int? preferenceAgeMax,
+    String? profileImageUrl,
+    MoodBoard? moodBoard,
+    String? profileAnthem,
+    List<String>? matches,
+  }) {
+    return User(
+      uid: uid ?? this.uid,
+      email: email ?? this.email,
+      name: name ?? this.name,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      age: age ?? this.age,
+      gender: gender ?? this.gender,
+      preferenceGender: preferenceGender ?? this.preferenceGender,
+      preferenceAgeMin: preferenceAgeMin ?? this.preferenceAgeMin,
+      preferenceAgeMax: preferenceAgeMax ?? this.preferenceAgeMax,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      moodBoard: moodBoard ?? this.moodBoard,
+      profileAnthem: profileAnthem ?? this.profileAnthem,
+      matches: matches ?? this.matches,
     );
   }
 }
