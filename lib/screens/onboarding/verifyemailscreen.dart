@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mememates/screens/onboarding/namescreen.dart';
 import 'package:mememates/utils/authentication/emailverification.dart';
+import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:provider/provider.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   String emailaddress;
@@ -420,6 +422,11 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           hasOTPError = true;
                         });
                       } else {
+                        final userProvider =
+                            Provider.of<UserProvider>(context, listen: false);
+                        userProvider.updateUser(userProvider.user!.copyWith(
+                          email: widget.emailaddress,
+                        ));
                         Navigator.pushReplacement(
                           context,
                           CupertinoPageRoute(
