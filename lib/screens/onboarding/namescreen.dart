@@ -1,6 +1,9 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mememates/screens/onboarding/birthdayscreen.dart';
+import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:provider/provider.dart';
 
 class NameScreen extends StatefulWidget {
   const NameScreen({super.key});
@@ -27,6 +30,15 @@ class _NameScreenState extends State<NameScreen> {
         hasNameError = true;
       });
     } else {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider
+          .updateUser(userProvider.user!.copyWith(name: nameController.text));
+      Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => Birthdayscreen(),
+        ),
+      );
       setState(() {
         hasNameError = false;
       });
@@ -43,7 +55,9 @@ class _NameScreenState extends State<NameScreen> {
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
             icon: Icon(
               IconsaxOutline.arrow_left_2,
             ),
@@ -90,6 +104,11 @@ class _NameScreenState extends State<NameScreen> {
                     keyboardType: TextInputType.emailAddress,
                     padding: EdgeInsets.all(
                       16,
+                    ),
+                    style: TextStyle(
+                      color: Color(0xFF090A0A),
+                      fontSize: 18,
+                      letterSpacing: 0.4,
                     ),
                     onChanged: (value) {
                       if (hasNameError) {
