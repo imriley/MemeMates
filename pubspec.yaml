@@ -44,6 +44,9 @@ dependencies:
   flutter_svg: ^2.0.17
   google_sign_in: ^6.2.2
   email_otp: ^3.0.2
+  dotted_border: ^2.1.0
+  image_picker: ^1.1.2
+  image_cropper: ^9.0.0
 
 dev_dependencies:
   flutter_test:

@@ -26,6 +26,10 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To add pictures from your gallery, MemeMate needs access to your device's gallery. Please grant permission to continue.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Would you like to allow MemeMate to access your device's camera to take a pictures?</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
