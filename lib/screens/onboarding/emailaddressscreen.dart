@@ -77,6 +77,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
               context,
               CupertinoPageRoute(
                 builder: (context) => VerifyEmailScreen(
+                  //TODO: Change to actual screen to move to after login!
                   emailaddress: emailController.text,
                 ),
               ),
