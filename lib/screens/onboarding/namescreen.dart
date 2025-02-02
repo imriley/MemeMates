@@ -15,6 +15,7 @@ class NameScreen extends StatefulWidget {
 class _NameScreenState extends State<NameScreen> {
   TextEditingController nameController = TextEditingController();
   bool hasNameError = false;
+  late UserProvider userProvider;
 
   void removeFocus() {
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -30,7 +31,6 @@ class _NameScreenState extends State<NameScreen> {
         hasNameError = true;
       });
     } else {
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
       userProvider
           .updateUser(userProvider.user!.copyWith(name: nameController.text));
       Navigator.push(
@@ -42,6 +42,15 @@ class _NameScreenState extends State<NameScreen> {
       setState(() {
         hasNameError = false;
       });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    if (userProvider.user?.name != null) {
+      nameController.text = userProvider.user!.name!;
     }
   }
 
