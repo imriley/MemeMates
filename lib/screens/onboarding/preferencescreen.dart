@@ -1,6 +1,10 @@
 import 'package:ficonsax/ficonsax.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:mememates/screens/onboarding/setprofilepicture.dart';
+import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:provider/provider.dart';
 
 class PreferenceScreen extends StatefulWidget {
   const PreferenceScreen({super.key});
@@ -10,13 +14,33 @@ class PreferenceScreen extends StatefulWidget {
 }
 
 class _PreferenceScreenState extends State<PreferenceScreen> {
-  String? _selectedValue;
+  String _selectedValue = '';
+  bool hasError = false;
+  double preferenceAgeMin = 18;
+  double preferenceAgeMax = 24;
+  late UserProvider userProvider;
 
   void removeFocus() {
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    int minAge = userProvider.user?.age != null
+        ? userProvider.user!.age! - 2 >= 18
+            ? userProvider.user!.age! - 2
+            : 18
+        : 18;
+
+    setState(() {
+      preferenceAgeMin = minAge.toDouble();
+      preferenceAgeMax = preferenceAgeMin + 4;
+    });
   }
 
   @override
@@ -27,7 +51,9 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
           icon: Icon(
             IconsaxOutline.arrow_left_2,
           ),
@@ -68,6 +94,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                   onPressed: () {
                     setState(() {
                       _selectedValue = 'woman';
+                      hasError = false;
                     });
                   },
                   style: OutlinedButton.styleFrom(
@@ -118,6 +145,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                   onPressed: () {
                     setState(() {
                       _selectedValue = 'man';
+                      hasError = false;
                     });
                   },
                   style: OutlinedButton.styleFrom(
@@ -168,6 +196,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                   onPressed: () {
                     setState(() {
                       _selectedValue = 'other';
+                      hasError = false;
                     });
                   },
                   style: OutlinedButton.styleFrom(
@@ -211,6 +240,69 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                     ],
                   ),
                 ),
+                hasError
+                    ? Container(
+                        margin: EdgeInsets.only(
+                          top: 8,
+                        ),
+                        child: Text(
+                          "Please select your gender preference.",
+                          style: TextStyle(
+                            color: Color(0xFFE94158),
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 32,
+                ),
+                Text(
+                  "Age Range",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Between ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      '${preferenceAgeMin.toStringAsFixed(0)} & ${preferenceAgeMax.toStringAsFixed(0)}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFFE94158),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                RangeSlider(
+                  min: 18.0,
+                  max: 60.0,
+                  values: RangeValues(preferenceAgeMin, preferenceAgeMax),
+                  activeColor: Color(0xFFE94158),
+                  onChanged: (values) {
+                    if (values.end - values.start >= 4) {
+                      setState(() {
+                        preferenceAgeMin = values.start;
+                        preferenceAgeMax = values.end;
+                      });
+                    }
+                  },
+                )
               ],
             ),
             SizedBox(
@@ -221,7 +313,25 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                 bottom: 32,
               ),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (_selectedValue.isEmpty) {
+                    setState(() {
+                      hasError = true;
+                    });
+                  } else {
+                    userProvider.updateUser(userProvider.user!.copyWith(
+                      preferenceGender: _selectedValue,
+                      preferenceAgeMin: preferenceAgeMin.toInt(),
+                      preferenceAgeMax: preferenceAgeMax.toInt(),
+                    ));
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => SetProfilePictureScreen(),
+                      ),
+                    );
+                  }
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: Color(0xFFE94158),
                   padding: EdgeInsets.all(

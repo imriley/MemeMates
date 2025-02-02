@@ -256,7 +256,6 @@ class _GenderScreenState extends State<GenderScreen> {
                         gender: _selectedValue,
                       ),
                     );
-
                     Navigator.push(
                       context,
                       CupertinoPageRoute(
