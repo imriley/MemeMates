@@ -1,6 +1,10 @@
 import 'package:ficonsax/ficonsax.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:mememates/screens/onboarding/preferencescreen.dart';
+import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:provider/provider.dart';
 
 class GenderScreen extends StatefulWidget {
   const GenderScreen({super.key});
@@ -10,7 +14,8 @@ class GenderScreen extends StatefulWidget {
 }
 
 class _GenderScreenState extends State<GenderScreen> {
-  String? _selectedValue;
+  String _selectedValue = '';
+  bool hasError = false;
 
   void removeFocus() {
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -27,7 +32,9 @@ class _GenderScreenState extends State<GenderScreen> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
           icon: Icon(
             IconsaxOutline.arrow_left_2,
           ),
@@ -68,6 +75,7 @@ class _GenderScreenState extends State<GenderScreen> {
                   onPressed: () {
                     setState(() {
                       _selectedValue = 'woman';
+                      hasError = false;
                     });
                   },
                   style: OutlinedButton.styleFrom(
@@ -117,6 +125,7 @@ class _GenderScreenState extends State<GenderScreen> {
                 TextButton(
                   onPressed: () {
                     setState(() {
+                      hasError = false;
                       _selectedValue = 'man';
                     });
                   },
@@ -167,6 +176,7 @@ class _GenderScreenState extends State<GenderScreen> {
                 TextButton(
                   onPressed: () {
                     setState(() {
+                      hasError = false;
                       _selectedValue = 'other';
                     });
                   },
@@ -211,6 +221,18 @@ class _GenderScreenState extends State<GenderScreen> {
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 16,
+                ),
+                hasError
+                    ? Text(
+                        "Please select your gender.",
+                        style: TextStyle(
+                          color: Color(0xFFE94158),
+                          fontSize: 16,
+                        ),
+                      )
+                    : Container()
               ],
             ),
             SizedBox(
@@ -221,7 +243,28 @@ class _GenderScreenState extends State<GenderScreen> {
                 bottom: 32,
               ),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (_selectedValue.isEmpty) {
+                    setState(() {
+                      hasError = true;
+                    });
+                  } else {
+                    final userProvider =
+                        Provider.of<UserProvider>(context, listen: false);
+                    userProvider.updateUser(
+                      userProvider.user!.copyWith(
+                        gender: _selectedValue,
+                      ),
+                    );
+
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => PreferenceScreen(),
+                      ),
+                    );
+                  }
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: Color(0xFFE94158),
                   padding: EdgeInsets.all(
