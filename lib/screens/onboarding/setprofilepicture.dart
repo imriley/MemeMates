@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mememates/screens/onboarding/createmoodboard.dart';
+import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:mememates/utils/storage/firestore.dart';
+import 'package:provider/provider.dart';
 
 class SetProfilePictureScreen extends StatefulWidget {
   const SetProfilePictureScreen({super.key});
@@ -17,9 +21,13 @@ class SetProfilePictureScreen extends StatefulWidget {
 
 class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
   File? selectedImage;
+  bool hasError = false;
 
   Future pickImage() async {
     try {
+      setState(() {
+        hasError = false;
+      });
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
       final imageTemp = File(image.path);
@@ -69,17 +77,6 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
             IconsaxOutline.arrow_left_2,
           ),
         ),
-        actions: [
-          CupertinoButton(
-            child: Text(
-              'Skip'.toUpperCase(),
-              style: TextStyle(
-                color: Color(0xFF7D7D7D),
-              ),
-            ),
-            onPressed: () {},
-          )
-        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
@@ -164,7 +161,22 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                             ),
                           ),
                         ),
-                )
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                hasError
+                    ? Container(
+                        margin: EdgeInsets.only(bottom: 16),
+                        child: Text(
+                          'Please choose a profile picture',
+                          style: TextStyle(
+                            color: Color(0xFFE94158),
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
+                    : Container(),
               ],
             ),
             Container(
@@ -172,7 +184,28 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                 bottom: 32,
               ),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () async {
+                  if (selectedImage == null) {
+                    setState(() {
+                      hasError = true;
+                    });
+                  } else {
+                    print('here');
+                    final downloadUrl =
+                        await uploadProfilePicture(selectedImage!);
+                    print(downloadUrl);
+                    final userProvider =
+                        Provider.of<UserProvider>(context, listen: false);
+                    userProvider.updateUser(userProvider.user!
+                        .copyWith(profileImageUrl: downloadUrl));
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateMoodBoard(),
+                      ),
+                    );
+                  }
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: Color(0xFFE94158),
                   padding: EdgeInsets.all(
