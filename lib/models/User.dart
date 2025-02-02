@@ -4,6 +4,7 @@ class User {
   String? uid; // Unique user ID
   String? email;
   String? name;
+  bool? isEmailVerified;
   DateTime? dateOfBirth;
   int? age;
   String? gender;
@@ -19,6 +20,7 @@ class User {
     this.uid,
     this.email,
     this.name,
+    this.isEmailVerified,
     this.dateOfBirth,
     this.age,
     this.gender,
@@ -36,6 +38,7 @@ class User {
       'uid': uid,
       'email': email,
       'name': name,
+      'isEmailVerified': isEmailVerified,
       'dateOfBirth': dateOfBirth,
       'age': age,
       'gender': gender,
@@ -54,6 +57,7 @@ class User {
       uid: map['uid'],
       email: map['email'],
       name: map['name'],
+      isEmailVerified: map['isEmailVerified'],
       dateOfBirth: map['dateOfBirth'],
       age: map['age'],
       gender: map['gender'],
@@ -72,6 +76,7 @@ class User {
     String? uid,
     String? email,
     String? name,
+    bool? isEmailVerified,
     DateTime? dateOfBirth,
     int? age,
     String? gender,
@@ -87,6 +92,7 @@ class User {
       uid: uid ?? this.uid,
       email: email ?? this.email,
       name: name ?? this.name,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       age: age ?? this.age,
       gender: gender ?? this.gender,

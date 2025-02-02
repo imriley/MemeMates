@@ -5,8 +5,9 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/screens/onboarding/emailaddressscreen.dart';
 import 'package:mememates/screens/onboarding/namescreen.dart';
 import 'dart:io' show Platform;
-
 import 'package:mememates/utils/authentication/firebase.dart';
+import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});
@@ -117,7 +118,7 @@ class SplashScreen extends StatelessWidget {
                       Expanded(
                         child: TextButton(
                           onPressed: () async {
-                            dynamic data = await FireAuth.signInWithGoogle();
+                            dynamic data = await FireAuth().signInWithGoogle();
                             if (data.runtimeType == String || data == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -127,6 +128,17 @@ class SplashScreen extends StatelessWidget {
                                 ),
                               );
                             } else {
+                              final userProvider = Provider.of<UserProvider>(
+                                  context,
+                                  listen: false);
+                              userProvider.updateUser(
+                                userProvider.user!.copyWith(
+                                  email: data.email,
+                                  uid: data.uid,
+                                  name: data.displayName,
+                                  isEmailVerified: true,
+                                ),
+                              );
                               Navigator.push(
                                 context,
                                 CupertinoPageRoute(

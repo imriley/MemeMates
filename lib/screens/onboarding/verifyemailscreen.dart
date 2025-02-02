@@ -426,6 +426,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                             Provider.of<UserProvider>(context, listen: false);
                         userProvider.updateUser(userProvider.user!.copyWith(
                           email: widget.emailaddress,
+                          isEmailVerified: true,
                         ));
                         Navigator.pushReplacement(
                           context,
