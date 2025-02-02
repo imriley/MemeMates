@@ -36,7 +36,7 @@ class _NameScreenState extends State<NameScreen> {
       Navigator.push(
         context,
         CupertinoPageRoute(
-          builder: (context) => Birthdayscreen(),
+          builder: (context) => BirthdayScreen(),
         ),
       );
       setState(() {

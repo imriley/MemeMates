@@ -2,15 +2,24 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mememates/screens/onboarding/genderscreen.dart';
+import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:provider/provider.dart';
 
-class Birthdayscreen extends StatefulWidget {
-  const Birthdayscreen({super.key});
+class BirthdayScreen extends StatefulWidget {
+  const BirthdayScreen({super.key});
 
   @override
-  State<Birthdayscreen> createState() => _BirthdayscreenState();
+  State<BirthdayScreen> createState() => _BirthdayScreenState();
 }
 
-class _BirthdayscreenState extends State<Birthdayscreen> {
+class _BirthdayScreenState extends State<BirthdayScreen> {
+  List<String> day = ['', ''];
+  List<String> month = ['', ''];
+  List<String> year = ['', '', '', ''];
+  bool hasError = false;
+  String errorMessage = "";
+
   @override
   Widget build(BuildContext context) {
     void removeFocus() {
@@ -28,7 +37,9 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
             icon: Icon(
               IconsaxOutline.arrow_left_2,
             ),
@@ -71,9 +82,20 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                       SizedBox(
                         width: 24,
                         child: TextField(
+                          autofocus: true,
                           onChanged: (value) {
+                            setState(() {
+                              hasError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              setState(() {
+                                day[0] = value;
+                              });
+                            } else {
+                              setState(() {
+                                day[0] = '';
+                              });
                             }
                           },
                           decoration: InputDecoration(
@@ -110,8 +132,19 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                         width: 24,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              setState(() {
+                                day[1] = value;
+                              });
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                              setState(() {
+                                day[1] = '';
+                              });
                             }
                           },
                           decoration: InputDecoration(
@@ -161,8 +194,19 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                         width: 24,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              setState(() {
+                                month[0] = value;
+                              });
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                              setState(() {
+                                month[0] = '';
+                              });
                             }
                           },
                           decoration: InputDecoration(
@@ -199,8 +243,19 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                         width: 24,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              setState(() {
+                                month[1] = value;
+                              });
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                              setState(() {
+                                month[1] = '';
+                              });
                             }
                           },
                           decoration: InputDecoration(
@@ -250,8 +305,19 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                         width: 24,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              setState(() {
+                                year[0] = value;
+                              });
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                              setState(() {
+                                year[0] = '';
+                              });
                             }
                           },
                           decoration: InputDecoration(
@@ -288,8 +354,19 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                         width: 24,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              setState(() {
+                                year[1] = value;
+                              });
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                              setState(() {
+                                year[1] = '';
+                              });
                             }
                           },
                           decoration: InputDecoration(
@@ -326,8 +403,19 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                         width: 24,
                         child: TextField(
                           onChanged: (value) {
+                            setState(() {
+                              hasError = false;
+                            });
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
+                              setState(() {
+                                year[2] = value;
+                              });
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                              setState(() {
+                                year[2] = '';
+                              });
                             }
                           },
                           decoration: InputDecoration(
@@ -363,7 +451,22 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                       SizedBox(
                         width: 24,
                         child: TextField(
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            setState(() {
+                              hasError = false;
+                            });
+                            if (value.length == 1) {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                year[3] = value;
+                              });
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                              setState(() {
+                                year[3] = '';
+                              });
+                            }
+                          },
                           decoration: InputDecoration(
                             hintText: 'Y',
                             hintStyle: TextStyle(
@@ -399,13 +502,19 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                   SizedBox(
                     height: 24,
                   ),
-                  Text(
-                    'Your profile will show your age, not your date of birth.',
-                    style: TextStyle(
-                      color: Color(0xFF7D7D7D),
-                      fontSize: 16,
-                    ),
-                  )
+                  hasError
+                      ? Text(errorMessage,
+                          style: TextStyle(
+                            color: Color(0xFFE94158),
+                            fontSize: 16,
+                          ))
+                      : Text(
+                          'Your profile will show your age, not your date of birth.',
+                          style: TextStyle(
+                            color: Color(0xFF7D7D7D),
+                            fontSize: 16,
+                          ),
+                        )
                 ],
               ),
               Container(
@@ -413,7 +522,68 @@ class _BirthdayscreenState extends State<Birthdayscreen> {
                   bottom: 32,
                 ),
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (day.any((element) => element.isEmpty) ||
+                        month.any((element) => element.isEmpty) ||
+                        year.any((element) => element.isEmpty)) {
+                      setState(() {
+                        hasError = true;
+                        errorMessage = 'Please enter your date of birth.';
+                      });
+                      return;
+                    }
+
+                    int _day = int.parse(day.join(''));
+                    int _month = int.parse(month.join(''));
+                    int _year = int.parse(year.join(''));
+
+                    if (_day > 31 || _month > 12) {
+                      setState(() {
+                        hasError = true;
+                        errorMessage = 'Please enter a valid date of birth.';
+                      });
+                      return;
+                    }
+
+                    if (_month < 1 || _month > 12) {
+                      setState(() {
+                        hasError = true;
+                        errorMessage = 'Invalid month.';
+                      });
+                      return;
+                    }
+                    int daysInMonth = DateUtils.getDaysInMonth(_year, _month);
+                    if (_day < 1 || _day > daysInMonth) {
+                      setState(() {
+                        hasError = true;
+                        errorMessage = 'Invalid day for the selected month.';
+                      });
+                      return;
+                    }
+
+                    try {
+                      DateTime dateOfBirth = DateTime(_year, _month, _day);
+                      int age = DateTime.now().year - dateOfBirth.year;
+
+                      final userProvider =
+                          Provider.of<UserProvider>(context, listen: false);
+                      userProvider.updateUser(userProvider.user!
+                          .copyWith(dateOfBirth: dateOfBirth, age: age));
+
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => GenderScreen(),
+                        ),
+                      );
+                    } catch (e) {
+                      setState(() {
+                        hasError = true;
+                        errorMessage = 'Please enter a valid date of birth.';
+                      });
+                      return;
+                    }
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: Color(0xFFE94158),
                     padding: EdgeInsets.all(
