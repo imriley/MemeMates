@@ -190,10 +190,8 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                       hasError = true;
                     });
                   } else {
-                    print('here');
                     final downloadUrl =
                         await uploadProfilePicture(selectedImage!);
-                    print(downloadUrl);
                     final userProvider =
                         Provider.of<UserProvider>(context, listen: false);
                     userProvider.updateUser(userProvider.user!
