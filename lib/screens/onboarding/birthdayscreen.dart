@@ -14,9 +14,9 @@ class BirthdayScreen extends StatefulWidget {
 }
 
 class _BirthdayScreenState extends State<BirthdayScreen> {
-  List<String> day = ['', ''];
-  List<String> month = ['', ''];
-  List<String> year = ['', '', '', ''];
+  List<String> _day = ['', ''];
+  List<String> _month = ['', ''];
+  List<String> _year = ['', '', '', ''];
   bool hasError = false;
   String errorMessage = "";
 
@@ -90,11 +90,11 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
                               setState(() {
-                                day[0] = value;
+                                _day[0] = value;
                               });
                             } else {
                               setState(() {
-                                day[0] = '';
+                                _day[0] = '';
                               });
                             }
                           },
@@ -138,12 +138,12 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
                               setState(() {
-                                day[1] = value;
+                                _day[1] = value;
                               });
                             } else {
                               FocusScope.of(context).previousFocus();
                               setState(() {
-                                day[1] = '';
+                                _day[1] = '';
                               });
                             }
                           },
@@ -200,12 +200,12 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
                               setState(() {
-                                month[0] = value;
+                                _month[0] = value;
                               });
                             } else {
                               FocusScope.of(context).previousFocus();
                               setState(() {
-                                month[0] = '';
+                                _month[0] = '';
                               });
                             }
                           },
@@ -249,12 +249,12 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
                               setState(() {
-                                month[1] = value;
+                                _month[1] = value;
                               });
                             } else {
                               FocusScope.of(context).previousFocus();
                               setState(() {
-                                month[1] = '';
+                                _month[1] = '';
                               });
                             }
                           },
@@ -311,12 +311,12 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
                               setState(() {
-                                year[0] = value;
+                                _year[0] = value;
                               });
                             } else {
                               FocusScope.of(context).previousFocus();
                               setState(() {
-                                year[0] = '';
+                                _year[0] = '';
                               });
                             }
                           },
@@ -360,12 +360,12 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
                               setState(() {
-                                year[1] = value;
+                                _year[1] = value;
                               });
                             } else {
                               FocusScope.of(context).previousFocus();
                               setState(() {
-                                year[1] = '';
+                                _year[1] = '';
                               });
                             }
                           },
@@ -409,12 +409,12 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                             if (value.length == 1) {
                               FocusScope.of(context).nextFocus();
                               setState(() {
-                                year[2] = value;
+                                _year[2] = value;
                               });
                             } else {
                               FocusScope.of(context).previousFocus();
                               setState(() {
-                                year[2] = '';
+                                _year[2] = '';
                               });
                             }
                           },
@@ -458,12 +458,12 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                             if (value.length == 1) {
                               FocusScope.of(context).unfocus();
                               setState(() {
-                                year[3] = value;
+                                _year[3] = value;
                               });
                             } else {
                               FocusScope.of(context).previousFocus();
                               setState(() {
-                                year[3] = '';
+                                _year[3] = '';
                               });
                             }
                           },
@@ -523,9 +523,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                 ),
                 child: TextButton(
                   onPressed: () {
-                    if (day.any((element) => element.isEmpty) ||
-                        month.any((element) => element.isEmpty) ||
-                        year.any((element) => element.isEmpty)) {
+                    if (_day.any((element) => element.isEmpty) ||
+                        _month.any((element) => element.isEmpty) ||
+                        _year.any((element) => element.isEmpty)) {
                       setState(() {
                         hasError = true;
                         errorMessage = 'Please enter your date of birth.';
@@ -533,11 +533,11 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                       return;
                     }
 
-                    int _day = int.parse(day.join(''));
-                    int _month = int.parse(month.join(''));
-                    int _year = int.parse(year.join(''));
+                    int day = int.parse(_day.join(''));
+                    int month = int.parse(_month.join(''));
+                    int year = int.parse(_year.join(''));
 
-                    if (_day > 31 || _month > 12) {
+                    if (day > 31 || month > 12) {
                       setState(() {
                         hasError = true;
                         errorMessage = 'Please enter a valid date of birth.';
@@ -545,15 +545,15 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                       return;
                     }
 
-                    if (_month < 1 || _month > 12) {
+                    if (month < 1 || month > 12) {
                       setState(() {
                         hasError = true;
                         errorMessage = 'Invalid month.';
                       });
                       return;
                     }
-                    int daysInMonth = DateUtils.getDaysInMonth(_year, _month);
-                    if (_day < 1 || _day > daysInMonth) {
+                    int daysInMonth = DateUtils.getDaysInMonth(year, month);
+                    if (day < 1 || day > daysInMonth) {
                       setState(() {
                         hasError = true;
                         errorMessage = 'Invalid day for the selected month.';
@@ -562,7 +562,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                     }
 
                     try {
-                      DateTime dateOfBirth = DateTime(_year, _month, _day);
+                      DateTime dateOfBirth = DateTime(year, month, day);
                       int age = DateTime.now().year - dateOfBirth.year;
 
                       final userProvider =
