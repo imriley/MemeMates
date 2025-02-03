@@ -33,7 +33,38 @@ class _CreateMoodBoardState extends State<CreateMoodBoard> {
           ),
         ),
       ),
-      body: Padding(padding: EdgeInsets.symmetric(horizontal: 24), child: Column(children: [Column(children: [SizedBox(height: 16,),LinearProgressIndicator(value: 88/100, color: Color(0xFFe94158),backgroundColor: Color(0xFFE3E5E5),),SizedBox(height: 32,),Text("Let’s create your Mood Board, upload your favorite memes or your pictures",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),SizedBox(height: 16,),Text('Hold and drag to reorder your photos', style: TextStyle(color: Color(0xFF7D7D7D), fontSize: 14),)],)],)),
+      body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  SizedBox(
+                    height: 16,
+                  ),
+                  LinearProgressIndicator(
+                    value: 88 / 100,
+                    color: Color(0xFFe94158),
+                    backgroundColor: Color(0xFFE3E5E5),
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  Text(
+                    "Let’s create your Mood Board, upload your favorite memes or your pictures",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    'Hold and drag to reorder your photos',
+                    style: TextStyle(color: Color(0xFF7D7D7D), fontSize: 14),
+                  )
+                ],
+              )
+            ],
+          )),
     );
   }
 }
