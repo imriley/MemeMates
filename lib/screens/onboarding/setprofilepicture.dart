@@ -200,7 +200,7 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                         .copyWith(profileImageUrl: downloadUrl));
                     Navigator.pushReplacement(
                       context,
-                      Cupertino(
+                      CupertinoPageRoute(
                         builder: (context) => CreateMoodBoard(),
                       ),
                     );
