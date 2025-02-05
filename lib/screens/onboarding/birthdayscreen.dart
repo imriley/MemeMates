@@ -14,9 +14,9 @@ class BirthdayScreen extends StatefulWidget {
 }
 
 class _BirthdayScreenState extends State<BirthdayScreen> {
-  List<String> _day = ['', ''];
-  List<String> _month = ['', ''];
-  List<String> _year = ['', '', '', ''];
+  final List<String> _day = ['', ''];
+  final List<String> _month = ['', ''];
+  final List<String> _year = ['', '', '', ''];
   bool hasError = false;
   String errorMessage = "";
 
