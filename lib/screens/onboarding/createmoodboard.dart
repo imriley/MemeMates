@@ -230,7 +230,7 @@ class _CreateMoodBoardState extends State<CreateMoodBoard> {
                                       child: Icon(
                                         Iconsax.add_circle_bold,
                                         color: Color(0xFFe94158),
-                                        size: 80,
+                                        size: 40,
                                       ),
                                     ),
                                   ),
