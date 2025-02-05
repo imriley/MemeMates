@@ -22,6 +22,7 @@ class SetProfilePictureScreen extends StatefulWidget {
 class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
   File? selectedImage;
   bool hasError = false;
+  bool isProcessing = false;
 
   Future pickImage() async {
     try {
@@ -110,7 +111,7 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                   height: 24,
                 ),
                 GestureDetector(
-                  onTap: pickImage,
+                  onTap: isProcessing ? null : pickImage,
                   child: selectedImage != null
                       ? Stack(
                           children: [
@@ -184,26 +185,28 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                 bottom: 32,
               ),
               child: TextButton(
-                onPressed: () async {
-                  if (selectedImage == null) {
-                    setState(() {
-                      hasError = true;
-                    });
-                  } else {
-                    final downloadUrl =
-                        await uploadProfilePicture(selectedImage!);
-                    final userProvider =
-                        Provider.of<UserProvider>(context, listen: false);
-                    userProvider.updateUser(userProvider.user!
-                        .copyWith(profileImageUrl: downloadUrl));
-                    Navigator.pushReplacement(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => CreateMoodBoard(),
-                      ),
-                    );
-                  }
-                },
+                onPressed: isProcessing
+                    ? null
+                    : () async {
+                        if (selectedImage == null) {
+                          setState(() {
+                            hasError = true;
+                          });
+                        } else {
+                          final downloadUrl =
+                              await uploadProfilePicture(selectedImage!);
+                          final userProvider =
+                              Provider.of<UserProvider>(context, listen: false);
+                          userProvider.updateUser(userProvider.user!
+                              .copyWith(profileImageUrl: downloadUrl));
+                          Navigator.pushReplacement(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => CreateMoodBoard(),
+                            ),
+                          );
+                        }
+                      },
                 style: TextButton.styleFrom(
                   backgroundColor: Color(0xFFE94158),
                   padding: EdgeInsets.all(
@@ -216,13 +219,22 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                     ),
                   ),
                 ),
-                child: Text(
-                  'Continue',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
+                child: isProcessing
+                    ? SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3,
+                        ),
+                      )
+                    : Text(
+                        'Continue',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
               ),
             )
           ],
