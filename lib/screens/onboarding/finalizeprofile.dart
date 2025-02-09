@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mememates/models/user.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:mememates/utils/storage/firestore.dart';
 import 'package:provider/provider.dart';
