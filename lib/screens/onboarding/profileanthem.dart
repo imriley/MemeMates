@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:mememates/screens/onboarding/finalizeprofile.dart';
 import 'package:mememates/utils/misc/debouncer.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
@@ -115,11 +116,17 @@ class _SelectProfileAnthemScreenState extends State<SelectProfileAnthemScreen> {
                   submitProcessing = true;
                 });
                 final audioUrl = await fetchYoutubeUrl(selectedSongTitle);
-                // final userProvider =
-                //     Provider.of<UserProvider>(context, listen: false);
-                // userProvider.updateUser(userProvider.user!.copyWith(
-                //   profileAnthem: audioUrl,
-                // ));
+                final userProvider =
+                    Provider.of<UserProvider>(context, listen: false);
+                userProvider.updateUser(userProvider.user!.copyWith(
+                  profileAnthem: audioUrl,
+                ));
+                Navigator.push(
+                  context,
+                  cupertino.CupertinoPageRoute(
+                    builder: (context) => FinalizeProfile(),
+                  ),
+                );
                 setState(() {
                   submitProcessing = false;
                 });

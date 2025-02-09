@@ -1,20 +1,20 @@
 import 'package:mememates/models/MoodBoard.dart';
 
 class User {
-  String? uid; // Unique user ID
+  String? uid;
   String? email;
   String? name;
   bool? isEmailVerified;
   DateTime? dateOfBirth;
   int? age;
   String? gender;
-  String? preferenceGender; // e.g., "Male", "Female", "All"
+  String? preferenceGender;
   int? preferenceAgeMin;
   int? preferenceAgeMax;
-  String? profileImageUrl; // Optional
+  String? profileImageUrl;
   MoodBoard? moodBoard;
-  String? profileAnthem; // Song ID or URL
-  List<String> matches; // List of user IDs
+  String? profileAnthem;
+  List<String> matches;
 
   User({
     this.uid,
@@ -86,7 +86,6 @@ class User {
     String? profileImageUrl,
     MoodBoard? moodBoard,
     String? profileAnthem,
-    List<String>? matches,
   }) {
     return User(
       uid: uid ?? this.uid,
@@ -102,7 +101,7 @@ class User {
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       moodBoard: moodBoard ?? this.moodBoard,
       profileAnthem: profileAnthem ?? this.profileAnthem,
-      matches: matches ?? this.matches,
+      matches: matches,
     );
   }
 }

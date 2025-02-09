@@ -1,6 +1,15 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mememates/models/User.dart' as mememates;
 import 'package:firebase_storage/firebase_storage.dart';
+
+Future<void> addUser(mememates.User user) async {
+  final userRef = FirebaseFirestore.instance.collection('users');
+  await userRef.add(
+    user.toMap(),
+  );
+}
 
 Future<String> uploadProfilePicture(File imageFile) async {
   final user = FirebaseAuth.instance.currentUser;

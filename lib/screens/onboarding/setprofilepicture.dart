@@ -8,7 +8,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mememates/screens/onboarding/createmoodboard.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
-import 'package:mememates/utils/storage/firestore.dart';
 import 'package:provider/provider.dart';
 
 class SetProfilePictureScreen extends StatefulWidget {
@@ -193,13 +192,12 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                             hasError = true;
                           });
                         } else {
-                          final downloadUrl =
-                              await uploadProfilePicture(selectedImage!);
+                          final imagePath = selectedImage!.path;
                           final userProvider =
                               Provider.of<UserProvider>(context, listen: false);
                           userProvider.updateUser(userProvider.user!
-                              .copyWith(profileImageUrl: downloadUrl));
-                          Navigator.pushReplacement(
+                              .copyWith(profileImageUrl: imagePath));
+                          Navigator.push(
                             context,
                             CupertinoPageRoute(
                               builder: (context) => CreateMoodBoard(),

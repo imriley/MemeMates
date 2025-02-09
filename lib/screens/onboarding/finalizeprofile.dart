@@ -1,6 +1,11 @@
+import 'dart:io';
 import 'package:ficonsax/ficonsax.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mememates/models/user.dart';
+import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:mememates/utils/storage/firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 
 class FinalizeProfile extends StatefulWidget {
@@ -12,13 +17,8 @@ class FinalizeProfile extends StatefulWidget {
 
 class _FinalizeProfileState extends State<FinalizeProfile> {
   bool isProcessing = false;
-  List images = [
-    'https://images8.alphacoders.com/123/1234928.jpg',
-    'https://img.freepik.com/premium-photo/pink-anime-girl-with-pink-hair-is-standing-tree-with-sky-background_849715-21393.jpg',
-    'https://img.freepik.com/premium-photo/anime-girl-with-pink-hair-white-shirt_839169-30075.jpg',
-    'https://cdn.shopify.com/s/files/1/0287/9062/0212/files/1_5d077683-0c77-4c7c-b7f5-327b98d1c300_480x480.jpg?v=1649440077',
-    'https://images.saymedia-content.com/.image/t_share/MTc2MjczMzQ2MDcyNjE4MTc0/15-badass-black-hair-anime-girls.jpg',
-  ];
+  late UserProvider userProvider;
+  List images = [];
   void _onReorder(int oldIndex, int newIndex) {
     setState(() {
       if (newIndex > oldIndex) {
@@ -30,6 +30,54 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    final profilePicturePath = userProvider.user!.profileImageUrl!;
+    images.add(File(profilePicturePath));
+    images.addAll(
+      userProvider.user!.moodBoard!.images.map(
+        (ele) => File(ele),
+      ),
+    );
+  }
+
+  void handleSubmit() async {
+    setState(() {
+      isProcessing = true;
+    });
+    try {
+      final profilePictureUrl = await uploadProfilePicture(
+        File(images[0].path),
+      );
+      List<String> imagesUrls = [];
+      for (var i = 1; i < images.length; i++) {
+        imagesUrls.add(
+          await uploadMoodBoardImage(
+            File(
+              images[i].path,
+            ),
+          ),
+        );
+      }
+      final user = userProvider.user!;
+      user.profileImageUrl = profilePictureUrl;
+      user.moodBoard!.images = imagesUrls;
+      userProvider.updateUser(user);
+      await addUser(userProvider.user!);
+
+      setState(() {
+        isProcessing = false;
+      });
+    } catch (e) {
+      setState(() {
+        isProcessing = false;
+      });
+      print('Something went wrong: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -37,7 +85,9 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
           icon: Icon(IconsaxOutline.arrow_left_2),
         ),
         centerTitle: true,
@@ -56,7 +106,7 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
         ),
         padding: EdgeInsets.symmetric(horizontal: 24),
         child: TextButton(
-          onPressed: () async {},
+          onPressed: isProcessing ? null : handleSubmit,
           style: TextButton.styleFrom(
             backgroundColor: Color(0xFFE94158),
             padding: EdgeInsets.all(
@@ -114,7 +164,7 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
                   _buildDetailItem(
                     context: context,
                     label: 'Name',
-                    value: 'Riley',
+                    value: userProvider.user!.name!,
                     onTap: () {
                       // Handle name tap
                     },
@@ -122,7 +172,8 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
                   _buildDetailItem(
                     context: context,
                     label: 'Gender',
-                    value: 'Male',
+                    value:
+                        userProvider.user!.gender! == "man" ? "Male" : "Female",
                     onTap: () {
                       // Handle gender tap
                     },
@@ -130,7 +181,8 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
                   _buildDetailItem(
                     context: context,
                     label: 'Date of Birth',
-                    value: '01-01-2000',
+                    value: DateFormat('MMM dd, yyyy')
+                        .format(userProvider.user!.dateOfBirth!),
                     onTap: () {
                       // Handle date of birth tap
                     },
@@ -138,7 +190,8 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
                   _buildDetailItem(
                     context: context,
                     label: 'Age Range',
-                    value: '20 - 24',
+                    value:
+                        "${userProvider.user!.preferenceAgeMin} - ${userProvider.user!.preferenceAgeMax}",
                     onTap: () {
                       // Handle age range tap
                     },
@@ -146,7 +199,9 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
                   _buildDetailItem(
                     context: context,
                     label: 'Gender Preference',
-                    value: 'Female',
+                    value: userProvider.user!.preferenceGender! == "man"
+                        ? "Men"
+                        : "Women",
                     onTap: () {
                       // Handle gender preference tap
                     },
@@ -188,7 +243,7 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
                                       Radius.circular(16),
                                     ),
                                     image: DecorationImage(
-                                      image: NetworkImage(image),
+                                      image: FileImage(image),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -230,7 +285,7 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
                                   Radius.circular(16),
                                 ),
                                 image: DecorationImage(
-                                  image: NetworkImage(image),
+                                  image: FileImage(image),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -238,6 +293,9 @@ class _FinalizeProfileState extends State<FinalizeProfile> {
                     ),
                   );
                 }),
+              ),
+              SizedBox(
+                height: 92,
               ),
             ],
           ),

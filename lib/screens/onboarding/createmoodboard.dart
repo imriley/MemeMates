@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:ficonsax/ficonsax.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mememates/models/MoodBoard.dart';
+import 'package:mememates/screens/onboarding/profileanthem.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
-import 'package:mememates/utils/storage/firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -48,13 +49,18 @@ class _CreateMoodBoardState extends State<CreateMoodBoard> {
     }
     List<String> imagesLinks = [];
     for (var image in selectedImages) {
-      final downloadUrl = await uploadMoodBoardImage(image!);
-      imagesLinks.add(downloadUrl);
+      imagesLinks.add(image!.path);
     }
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     userProvider.updateUser(userProvider.user!.copyWith(
       moodBoard: MoodBoard(images: imagesLinks),
     ));
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => SelectProfileAnthemScreen(),
+      ),
+    );
     setState(() {
       isProcessing = false;
     });
