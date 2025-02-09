@@ -1,18 +1,18 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mememates/screens/onboarding/verifyemailscreen.dart';
+import 'package:mememates/screens/onboarding/verification_screen.dart';
 import 'package:mememates/utils/authentication/emailverification.dart';
 import 'package:mememates/utils/authentication/firebase.dart';
 
-class EmailAddressScreen extends StatefulWidget {
-  const EmailAddressScreen({super.key});
+class EmailScreen extends StatefulWidget {
+  const EmailScreen({super.key});
 
   @override
-  State<EmailAddressScreen> createState() => _EmailAddressScreenState();
+  State<EmailScreen> createState() => _EmailScreenState();
 }
 
-class _EmailAddressScreenState extends State<EmailAddressScreen> {
+class _EmailScreenState extends State<EmailScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -76,7 +76,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => VerifyEmailScreen(
+                builder: (context) => VerificationScreen(
                   //TODO: Change to actual screen to move to after login!
                   emailaddress: emailController.text,
                 ),
@@ -105,7 +105,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context) => VerifyEmailScreen(
+            builder: (context) => VerificationScreen(
               emailaddress: emailController.text,
             ),
           ),

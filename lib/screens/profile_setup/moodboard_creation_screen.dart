@@ -7,19 +7,20 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mememates/models/MoodBoard.dart';
-import 'package:mememates/screens/onboarding/profileanthem.dart';
+import 'package:mememates/screens/profile_setup/music_selection_screen.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 
-class CreateMoodBoard extends StatefulWidget {
-  const CreateMoodBoard({super.key});
+class MoodboardCreationScreen extends StatefulWidget {
+  const MoodboardCreationScreen({super.key});
 
   @override
-  State<CreateMoodBoard> createState() => _CreateMoodBoardState();
+  State<MoodboardCreationScreen> createState() =>
+      _MoodboardCreationScreenState();
 }
 
-class _CreateMoodBoardState extends State<CreateMoodBoard> {
+class _MoodboardCreationScreenState extends State<MoodboardCreationScreen> {
   List<File?> selectedImages = [];
   int imagesLength = 4;
   bool hasError = false;
@@ -58,7 +59,7 @@ class _CreateMoodBoardState extends State<CreateMoodBoard> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => SelectProfileAnthemScreen(),
+        builder: (context) => MusicSelectionScreen(),
       ),
     );
     setState(() {

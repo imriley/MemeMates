@@ -2,20 +2,20 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mememates/screens/onboarding/namescreen.dart';
+import 'package:mememates/screens/onboarding/name_screen.dart';
 import 'package:mememates/utils/authentication/emailverification.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
 
-class VerifyEmailScreen extends StatefulWidget {
+class VerificationScreen extends StatefulWidget {
   String emailaddress;
-  VerifyEmailScreen({super.key, required this.emailaddress});
+  VerificationScreen({super.key, required this.emailaddress});
 
   @override
-  State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
+  State<VerificationScreen> createState() => _VerificationScreenState();
 }
 
-class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
+class _VerificationScreenState extends State<VerificationScreen> {
   List<String> otp = ["", "", "", "", "", ""];
   bool hasOTPError = false;
 

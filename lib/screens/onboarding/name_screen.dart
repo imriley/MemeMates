@@ -1,7 +1,7 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mememates/screens/onboarding/birthdayscreen.dart';
+import 'package:mememates/screens/onboarding/birthday_screen.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
 

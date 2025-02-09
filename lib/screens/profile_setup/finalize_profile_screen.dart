@@ -7,14 +7,14 @@ import 'package:mememates/utils/storage/firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 
-class FinalizeProfile extends StatefulWidget {
-  const FinalizeProfile({super.key});
+class FinalizeProfileScreen extends StatefulWidget {
+  const FinalizeProfileScreen({super.key});
 
   @override
-  State<FinalizeProfile> createState() => _FinalizeProfileState();
+  State<FinalizeProfileScreen> createState() => _FinalizeProfileScreenState();
 }
 
-class _FinalizeProfileState extends State<FinalizeProfile> {
+class _FinalizeProfileScreenState extends State<FinalizeProfileScreen> {
   bool isProcessing = false;
   late UserProvider userProvider;
   List images = [];

@@ -6,19 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mememates/screens/onboarding/createmoodboard.dart';
+import 'package:mememates/screens/profile_setup/moodboard_creation_screen.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
 
-class SetProfilePictureScreen extends StatefulWidget {
-  const SetProfilePictureScreen({super.key});
+class ProfilePictureScreen extends StatefulWidget {
+  const ProfilePictureScreen({super.key});
 
   @override
-  State<SetProfilePictureScreen> createState() =>
-      _SetProfilePictureScreenState();
+  State<ProfilePictureScreen> createState() => _ProfilePictureScreenState();
 }
 
-class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
+class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
   File? selectedImage;
   bool hasError = false;
   bool isProcessing = false;
@@ -200,7 +199,7 @@ class _SetProfilePictureScreenState extends State<SetProfilePictureScreen> {
                           Navigator.push(
                             context,
                             CupertinoPageRoute(
-                              builder: (context) => CreateMoodBoard(),
+                              builder: (context) => MoodboardCreationScreen(),
                             ),
                           );
                         }

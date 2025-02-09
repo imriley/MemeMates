@@ -4,22 +4,21 @@ import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:mememates/screens/onboarding/finalizeprofile.dart';
+import 'package:mememates/screens/profile_setup/finalize_profile_screen.dart';
 import 'package:mememates/utils/misc/debouncer.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart' as sp;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class SelectProfileAnthemScreen extends StatefulWidget {
-  const SelectProfileAnthemScreen({super.key});
+class MusicSelectionScreen extends StatefulWidget {
+  const MusicSelectionScreen({super.key});
 
   @override
-  State<SelectProfileAnthemScreen> createState() =>
-      _SelectProfileAnthemScreenState();
+  State<MusicSelectionScreen> createState() => _MusicSelectionScreenState();
 }
 
-class _SelectProfileAnthemScreenState extends State<SelectProfileAnthemScreen> {
+class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
   late sp.SpotifyApi spotify;
   List<sp.Track> tracks = [];
   TextEditingController searchController = TextEditingController();
@@ -124,7 +123,7 @@ class _SelectProfileAnthemScreenState extends State<SelectProfileAnthemScreen> {
                 Navigator.push(
                   context,
                   cupertino.CupertinoPageRoute(
-                    builder: (context) => FinalizeProfile(),
+                    builder: (context) => FinalizeProfileScreen(),
                   ),
                 );
                 setState(() {

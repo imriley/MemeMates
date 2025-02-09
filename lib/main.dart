@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mememates/firebase_options.dart';
-import 'package:mememates/screens/homescreen.dart';
+import 'package:mememates/screens/splash_screen.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +39,7 @@ class MemeMates extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.outfitTextTheme(),
       ),
-      home: Homescreen(),
+      home: SplashScreen(),
     );
   }
 }

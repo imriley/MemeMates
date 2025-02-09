@@ -2,7 +2,7 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:mememates/screens/onboarding/preferencescreen.dart';
+import 'package:mememates/screens/onboarding/preference_screen.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
 
