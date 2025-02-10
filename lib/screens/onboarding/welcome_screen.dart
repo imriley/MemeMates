@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:mememates/screens/main_screen.dart';
 import 'package:mememates/screens/onboarding/email_screen.dart';
 import 'package:mememates/screens/onboarding/name_screen.dart';
 import 'dart:io' show Platform;
@@ -128,23 +130,37 @@ class WelcomeScreen extends StatelessWidget {
                                 ),
                               );
                             } else {
-                              final userProvider = Provider.of<UserProvider>(
+                              DocumentSnapshot userDoc = await FirebaseFirestore
+                                  .instance
+                                  .collection('users')
+                                  .doc(data.uid)
+                                  .get();
+                              if (userDoc.exists) {
+                                Navigator.pushReplacement(
                                   context,
-                                  listen: false);
-                              userProvider.updateUser(
-                                userProvider.user!.copyWith(
-                                  email: data.email,
-                                  uid: data.uid,
-                                  name: data.displayName,
-                                  isEmailVerified: true,
-                                ),
-                              );
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => const NameScreen(),
-                                ),
-                              );
+                                  CupertinoPageRoute(
+                                    builder: (context) => MainScreen(),
+                                  ),
+                                );
+                              } else {
+                                final userProvider = Provider.of<UserProvider>(
+                                    context,
+                                    listen: false);
+                                userProvider.updateUser(
+                                  userProvider.user!.copyWith(
+                                    email: data.email,
+                                    uid: data.uid,
+                                    name: data.displayName,
+                                    isEmailVerified: true,
+                                  ),
+                                );
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => const NameScreen(),
+                                  ),
+                                );
+                              }
                             }
                           },
                           style: OutlinedButton.styleFrom(
