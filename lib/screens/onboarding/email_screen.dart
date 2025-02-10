@@ -1,6 +1,7 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mememates/screens/main_screen.dart';
 import 'package:mememates/screens/onboarding/verification_screen.dart';
 import 'package:mememates/utils/authentication/emailverification.dart';
 import 'package:mememates/utils/authentication/firebase.dart';
@@ -48,7 +49,6 @@ class _EmailScreenState extends State<EmailScreen> {
     setState(() {
       hasError = false;
     });
-    // TODO: don't verify email if it's already verified.
     var data = await FireAuth().createUserWithEmailAndPassword(
         emailController.text, passwordController.text);
     if (data != true) {
@@ -76,10 +76,7 @@ class _EmailScreenState extends State<EmailScreen> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => VerificationScreen(
-                  //TODO: Change to actual screen to move to after login!
-                  emailaddress: emailController.text,
-                ),
+                builder: (context) => MainScreen(),
               ),
             );
           }
