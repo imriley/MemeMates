@@ -51,16 +51,16 @@ class _FinalizeProfileScreenState extends State<FinalizeProfileScreen> {
       final profilePictureUrl = await uploadProfilePicture(
         File(images[0].path),
       );
-      List<String> imagesUrls = [];
+      List<Future<String>> uploadTasks = [];
       for (var i = 1; i < images.length; i++) {
-        imagesUrls.add(
-          await uploadMoodBoardImage(
-            File(
-              images[i].path,
-            ),
-          ),
-        );
+        uploadTasks.add(uploadMoodBoardImage(
+          File(images[i].path),
+        ));
       }
+      List<String> imagesUrls = [];
+      await Future.wait(uploadTasks).then((downloadUrls) {
+        imagesUrls = downloadUrls;
+      });
       final user = userProvider.user!;
       user.profileImageUrl = profilePictureUrl;
       user.moodBoard!.images = imagesUrls;
