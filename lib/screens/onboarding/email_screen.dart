@@ -19,6 +19,7 @@ class _EmailScreenState extends State<EmailScreen> {
 
   bool hasError = false;
   String errorMessage = '';
+  bool isProcessing = false;
 
   void removeFocus() {
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -28,6 +29,12 @@ class _EmailScreenState extends State<EmailScreen> {
   }
 
   void handleSubmit() async {
+    if (isProcessing) return;
+
+    setState(() {
+      isProcessing = true;
+    });
+
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       setState(() {
         hasError = true;
@@ -207,10 +214,11 @@ class _EmailScreenState extends State<EmailScreen> {
                     controller: passwordController,
                     placeholder: "Password",
                     obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
                     placeholderStyle: TextStyle(
                       color: Color(0xFF090A0A),
                     ),
-                    keyboardType: TextInputType.emailAddress,
                     padding: EdgeInsets.all(
                       16,
                     ),
@@ -278,13 +286,22 @@ class _EmailScreenState extends State<EmailScreen> {
                       ),
                     ),
                   ),
-                  child: Text(
-                    'Send Verification Code',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
+                  child: isProcessing
+                      ? SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 3,
+                          ),
+                        )
+                      : Text(
+                          'Continue',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
                 ),
               ),
             ],

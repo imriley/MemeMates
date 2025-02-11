@@ -110,7 +110,6 @@ class _NameScreenState extends State<NameScreen> {
                     placeholderStyle: TextStyle(
                       color: Color(0xFF090A0A),
                     ),
-                    keyboardType: TextInputType.emailAddress,
                     padding: EdgeInsets.all(
                       16,
                     ),

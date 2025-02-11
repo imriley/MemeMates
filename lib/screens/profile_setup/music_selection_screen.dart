@@ -120,6 +120,7 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                 userProvider.updateUser(userProvider.user!.copyWith(
                   profileAnthem: audioUrl,
                 ));
+                await _player.stop();
                 Navigator.push(
                   context,
                   cupertino.CupertinoPageRoute(
@@ -199,7 +200,6 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                         placeholderStyle: TextStyle(
                           color: Color(0xFF6D7171),
                         ),
-                        keyboardType: TextInputType.emailAddress,
                         padding: EdgeInsets.all(
                           16,
                         ),

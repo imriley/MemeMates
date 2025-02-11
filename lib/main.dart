@@ -33,7 +33,6 @@ void main() async {
 class MemeMates extends StatelessWidget {
   const MemeMates({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

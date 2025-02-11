@@ -111,6 +111,9 @@ class _FinalizeProfileScreenState extends State<FinalizeProfileScreen> {
         margin: EdgeInsets.only(
           bottom: 32,
         ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
         padding: EdgeInsets.symmetric(horizontal: 24),
         child: TextButton(
           onPressed: isProcessing ? null : handleSubmit,
@@ -331,11 +334,6 @@ class _FinalizeProfileScreenState extends State<FinalizeProfileScreen> {
             bottom: BorderSide(
               color: Color(0xFFEEEEEE),
               width: 1,
-            ),
-          ),
-          borderRadius: BorderRadius.all(
-            Radius.circular(
-              16,
             ),
           ),
         ),
