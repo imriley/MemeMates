@@ -25,6 +25,8 @@ class _MoodboardCreationScreenState extends State<MoodboardCreationScreen> {
   int imagesLength = 4;
   bool hasError = false;
   bool isProcessing = false;
+  late ImagePicker imagePicker;
+  late ImageCropper imageCropper;
 
   void _onReorder(int oldIndex, int newIndex) {
     if (isProcessing) return;
@@ -72,7 +74,21 @@ class _MoodboardCreationScreenState extends State<MoodboardCreationScreen> {
       setState(() {
         hasError = false;
       });
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (index == 0 && selectedImages.isEmpty) {
+        var imageList = await imagePicker.pickMultiImage(limit: 4);
+        if (imageList.length >= 5) {
+          imageList = imageList.take(4).toList();
+        }
+        for (var image in imageList) {
+          final imageTemp = File(image.path);
+          final croppedImage = await _cropImage(imageTemp);
+          setState(() {
+            selectedImages.add(croppedImage);
+          });
+        }
+        return;
+      }
+      final image = await imagePicker.pickImage(source: ImageSource.gallery);
       if (image == null) return;
       final imageTemp = File(image.path);
       final croppedImage = await _cropImage(imageTemp);
@@ -98,7 +114,7 @@ class _MoodboardCreationScreenState extends State<MoodboardCreationScreen> {
 
   Future<File?> _cropImage(File imageFile) async {
     try {
-      CroppedFile? croppedImage = await ImageCropper().cropImage(
+      CroppedFile? croppedImage = await imageCropper.cropImage(
         sourcePath: imageFile.path,
         compressQuality: 100,
         maxHeight: 400,
@@ -109,6 +125,13 @@ class _MoodboardCreationScreenState extends State<MoodboardCreationScreen> {
       print('Failed to crop image: $e');
     }
     return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    imagePicker = ImagePicker();
+    imageCropper = ImageCropper();
   }
 
   @override
