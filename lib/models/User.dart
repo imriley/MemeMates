@@ -11,6 +11,7 @@ class User {
   String? preferenceGender;
   int? preferenceAgeMin;
   int? preferenceAgeMax;
+  List<String> interests;
   String? profileImageUrl;
   MoodBoard? moodBoard;
   String? profileAnthem;
@@ -27,6 +28,7 @@ class User {
     this.preferenceGender,
     this.preferenceAgeMin,
     this.preferenceAgeMax,
+    this.interests = const [],
     this.profileImageUrl,
     this.moodBoard,
     this.profileAnthem,
@@ -45,6 +47,7 @@ class User {
       'preferenceGender': preferenceGender,
       'preferenceAgeMin': preferenceAgeMin,
       'preferenceAgeMax': preferenceAgeMax,
+      'interests': interests,
       'profileImageUrl': profileImageUrl,
       'moodBoard': moodBoard?.toMap(),
       'profileAnthem': profileAnthem,
@@ -64,6 +67,7 @@ class User {
       preferenceGender: map['preferenceGender'],
       preferenceAgeMin: map['preferenceAgeMin'],
       preferenceAgeMax: map['preferenceAgeMax'],
+      interests: List<String>.from(map['interests']),
       profileImageUrl: map['profileImageUrl'],
       moodBoard:
           map['moodBoard'] != null ? MoodBoard.fromMap(map['moodBoard']) : null,
@@ -83,6 +87,7 @@ class User {
     String? preferenceGender,
     int? preferenceAgeMin,
     int? preferenceAgeMax,
+    List<String>? interests,
     String? profileImageUrl,
     MoodBoard? moodBoard,
     String? profileAnthem,
@@ -98,6 +103,7 @@ class User {
       preferenceGender: preferenceGender ?? this.preferenceGender,
       preferenceAgeMin: preferenceAgeMin ?? this.preferenceAgeMin,
       preferenceAgeMax: preferenceAgeMax ?? this.preferenceAgeMax,
+      interests: interests ?? this.interests,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       moodBoard: moodBoard ?? this.moodBoard,
       profileAnthem: profileAnthem ?? this.profileAnthem,

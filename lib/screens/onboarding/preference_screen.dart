@@ -2,7 +2,7 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:mememates/screens/onboarding/profile_picture_screen.dart';
+import 'package:mememates/screens/onboarding/interest_screen.dart';
 import 'package:mememates/utils/providers/userprovider.dart';
 import 'package:provider/provider.dart';
 
@@ -327,7 +327,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                     Navigator.push(
                       context,
                       CupertinoPageRoute(
-                        builder: (context) => ProfilePictureScreen(),
+                        builder: (context) => InterestScreen(),
                       ),
                     );
                   }
