@@ -8,7 +8,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mememates/models/MoodBoard.dart';
 import 'package:mememates/screens/profile_setup/music_selection_screen.dart';
-import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/screens/onboarding/interest_screen.dart';
-import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class PreferenceScreen extends StatefulWidget {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mememates/screens/onboarding/name_screen.dart';
 import 'package:mememates/utils/authentication/emailverification.dart';
-import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class VerificationScreen extends StatefulWidget {

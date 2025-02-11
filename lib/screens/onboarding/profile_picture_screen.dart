@@ -7,7 +7,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mememates/screens/profile_setup/moodboard_creation_screen.dart';
-import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePictureScreen extends StatefulWidget {

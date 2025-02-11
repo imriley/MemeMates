@@ -8,7 +8,7 @@ import 'package:mememates/screens/main_screen.dart';
 import 'package:mememates/screens/onboarding/welcome_screen.dart';
 
 import 'package:mememates/screens/splash_screen.dart';
-import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

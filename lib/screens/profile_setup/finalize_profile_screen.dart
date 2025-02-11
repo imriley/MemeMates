@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mememates/screens/main_screen.dart';
-import 'package:mememates/utils/providers/userprovider.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:mememates/utils/storage/firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
