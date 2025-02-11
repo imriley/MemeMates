@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mememates/models/MoodBoard.dart';
 
 class User {
@@ -61,7 +62,9 @@ class User {
       email: map['email'],
       name: map['name'],
       isEmailVerified: map['isEmailVerified'],
-      dateOfBirth: map['dateOfBirth'],
+      dateOfBirth: map['dateOfBirth'] != null
+          ? (map['dateOfBirth'] as Timestamp).toDate()
+          : null,
       age: map['age'],
       gender: map['gender'],
       preferenceGender: map['preferenceGender'],
@@ -109,5 +112,10 @@ class User {
       profileAnthem: profileAnthem ?? this.profileAnthem,
       matches: matches,
     );
+  }
+
+  @override
+  String toString() {
+    return 'User{uid: $uid, email: $email, name: $name, isEmailVerified: $isEmailVerified, dateOfBirth: $dateOfBirth, age: $age, gender: $gender, preferenceGender: $preferenceGender, preferenceAgeMin: $preferenceAgeMin, preferenceAgeMax: $preferenceAgeMax, interests: $interests, profileImageUrl: $profileImageUrl, moodBoard: $moodBoard, profileAnthem: $profileAnthem, matches: $matches}';
   }
 }
