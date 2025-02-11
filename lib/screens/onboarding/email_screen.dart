@@ -40,6 +40,9 @@ class _EmailScreenState extends State<EmailScreen> {
         hasError = true;
         errorMessage = "Please enter an email address and password";
       });
+      setState(() {
+        isProcessing = false;
+      });
       return;
     }
 
@@ -106,6 +109,9 @@ class _EmailScreenState extends State<EmailScreen> {
     if (data == true) {
       bool isEmailSent = await EmailVerification().send(emailController.text);
       if (isEmailSent) {
+        setState(() {
+          isProcessing = false;
+        });
         Navigator.push(
           context,
           CupertinoPageRoute(
