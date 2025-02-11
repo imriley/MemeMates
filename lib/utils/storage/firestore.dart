@@ -10,7 +10,6 @@ Future<void> addUser(mememates.User user) async {
     final uid = user.uid;
 
     await userRef.doc(uid).set(user.toMap());
-    print('User added successfully with UID: $uid');
   } catch (e) {
     print('Error adding user: $e');
   }
@@ -20,9 +19,9 @@ Future<String> uploadProfilePicture(File imageFile) async {
   final user = FirebaseAuth.instance.currentUser;
   Reference storageRef = FirebaseStorage.instance
       .ref()
-      .child('users') // Main user folder
-      .child(user!.uid) // User-specific folder
-      .child('profile_picture'); // Profile picture folder
+      .child('users')
+      .child(user!.uid)
+      .child('profile_picture');
   UploadTask uploadTask = storageRef.putFile(imageFile);
   TaskSnapshot snapshot = await uploadTask;
   String downloadUrl = await snapshot.ref.getDownloadURL();
@@ -33,9 +32,9 @@ Future<String> uploadMoodBoardImage(File imageFile) async {
   final user = FirebaseAuth.instance.currentUser;
   Reference storageRef = FirebaseStorage.instance
       .ref()
-      .child('users') // Main user folder
-      .child(user!.uid) // User-specific folder
-      .child('mood_board_images') // Mood board images folder
+      .child('users')
+      .child(user!.uid)
+      .child('mood_board_images')
       .child('${DateTime.now().millisecondsSinceEpoch.toString()}.jpg');
   UploadTask uploadTask = storageRef.putFile(imageFile);
   TaskSnapshot snapshot = await uploadTask;
