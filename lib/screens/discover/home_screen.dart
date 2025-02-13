@@ -1,5 +1,7 @@
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/models/User.dart';
 import 'package:mememates/screens/discover/profile_detail_screen.dart';
 import 'package:mememates/utils/storage/firestore.dart';
@@ -116,14 +118,14 @@ class _HomeScreenState extends State<HomeScreen>
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildActionButton(
-                  icon: Icons.close,
+                  icon: AntDesign.close_outline,
                   color: Colors.orange,
                   onTap: () {
                     // Handle dislike
                   },
                 ),
                 _buildActionButton(
-                  icon: Icons.favorite,
+                  icon: IconsaxBold.heart,
                   color: const Color(0xFFE94057),
                   size: 64,
                   onTap: () {
