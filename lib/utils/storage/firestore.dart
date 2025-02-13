@@ -17,6 +17,25 @@ Future<void> addUser(mememates.User user) async {
   }
 }
 
+Future<mememates.User?> getCurrentUser() async {
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser == null) {
+    return null;
+  }
+  final usersCollection = FirebaseFirestore.instance.collection('users');
+  final currentUserUid = currentUser.uid;
+
+  try {
+    final querySnapshot =
+        await usersCollection.where('uid', isEqualTo: currentUserUid).get();
+    final user = mememates.User.fromMap(querySnapshot.docs.first.data());
+    return user;
+  } catch (e) {
+    print('Something went wrong: $e');
+    return null;
+  }
+}
+
 Future<List<mememates.User>> fetchAllUsers() async {
   final currentUser = FirebaseAuth.instance.currentUser;
   if (currentUser == null) {
