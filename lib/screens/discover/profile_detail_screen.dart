@@ -1,4 +1,6 @@
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/models/User.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
@@ -21,11 +23,18 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
               children: [
                 Stack(
                   children: [
-                    Image.network(
-                      'https://images.unsplash.com/photo-1600275669439-14e40452d20b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                      width: double.infinity,
-                      height: 450,
-                      fit: BoxFit.cover,
+                    GestureDetector(
+                      onVerticalDragUpdate: (details) {
+                        if (details.delta.dy > 20) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: Image.network(
+                        widget.user.profileImageUrl!,
+                        width: double.infinity,
+                        height: 450,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     Positioned(
                       bottom: 20,
@@ -35,12 +44,12 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildActionButton(
-                            icon: Icons.close,
+                            icon: AntDesign.close_outline,
                             backgroundColor: Colors.white,
                             iconColor: Colors.orange,
                           ),
                           _buildActionButton(
-                            icon: Icons.favorite,
+                            icon: IconsaxBold.heart,
                             backgroundColor: const Color(0xFFE94057),
                             iconColor: Colors.white,
                             size: 64,
@@ -62,112 +71,26 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Name and Send Message
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Jessica Parker, 23',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'Professional model',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            '${widget.user.name}, ${widget.user.age}',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           IconButton(
                             icon: const Icon(
-                              Icons.send,
+                              IconsaxOutline.send_2,
                               color: Color(0xFFE94057),
                             ),
                             onPressed: () {},
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Location
-                      const Text(
-                        'Location',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            color: Color(0xFFE94057),
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Chicago, IL United States',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFE8EA),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Text(
-                              '1 km',
-                              style: TextStyle(
-                                color: Color(0xFFE94057),
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // About
-                      const Text(
-                        'About',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'My name is Jessica Parker and I enjoy meeting new people and finding ways to help them have an uplifting experience. I enjoy reading..',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          height: 1.5,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Read more',
-                          style: TextStyle(
-                            color: Color(0xFFE94057),
-                          ),
-                        ),
-                      ),
-
-                      // Interests
                       const Text(
                         'Interests',
                         style: TextStyle(
@@ -179,38 +102,17 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: [
-                          _buildInterestChip('Travelling', true),
-                          _buildInterestChip('Books', true),
-                          _buildInterestChip('Music', false),
-                          _buildInterestChip('Dancing', false),
-                          _buildInterestChip('Modeling', false),
-                        ],
+                        children: widget.user.interests
+                            .map((ele) => _buildInterestChip(ele))
+                            .toList(),
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Gallery
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Gallery',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              'See all',
-                              style: TextStyle(
-                                color: Color(0xFFE94057),
-                              ),
-                            ),
-                          ),
-                        ],
+                      const Text(
+                        'MoodBoard',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       _buildGalleryGrid(),
@@ -264,7 +166,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         color: backgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 2),
@@ -279,20 +181,20 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     );
   }
 
-  Widget _buildInterestChip(String label, bool isSelected) {
+  Widget _buildInterestChip(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         border: Border.all(
-          color: isSelected ? const Color(0xFFE94057) : Colors.grey[300]!,
+          color: const Color(0xFFE94057),
         ),
         borderRadius: BorderRadius.circular(20),
-        color: isSelected ? const Color(0xFFFFE8EA) : Colors.transparent,
+        color: const Color(0xFFFFE8EA),
       ),
       child: Text(
         label,
         style: TextStyle(
-          color: isSelected ? const Color(0xFFE94057) : Colors.grey[600],
+          color: const Color(0xFFE94057),
         ),
       ),
     );
@@ -305,16 +207,15 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       crossAxisCount: 2,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
-      children: List.generate(
-        4,
-        (index) => ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            'https://images.unsplash.com/photo-1600275669439-14e40452d20b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
+      children: widget.user.moodBoard!.images
+          .map((url) => ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  url,
+                  fit: BoxFit.cover,
+                ),
+              ))
+          .toList(),
     );
   }
 }
