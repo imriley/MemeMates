@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:mememates/models/User.dart' as mememates;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:mememates/models/Match.dart';
 
 Future<void> addUser(mememates.User user) async {
   try {
@@ -14,6 +15,48 @@ Future<void> addUser(mememates.User user) async {
     await userRef.doc(uid).set(user.toMap());
   } catch (e) {
     print('Error adding user: $e');
+  }
+}
+
+Future<void> updateLikesAndMatches(mememates.User otherUser) async {
+  final currentUserFromFirebase = FirebaseAuth.instance.currentUser;
+  final userCollection = FirebaseFirestore.instance.collection('users');
+  if (currentUserFromFirebase == null) {
+    return;
+  }
+  try {
+    final currentUserQuerySnapshot = await userCollection
+        .where('uid', isEqualTo: currentUserFromFirebase.uid)
+        .get();
+
+    if (currentUserQuerySnapshot.docs.isNotEmpty) {
+      final currentUserDoc = currentUserQuerySnapshot.docs.first;
+      final currentUserRef = currentUserDoc.reference;
+      await currentUserRef.update({
+        'likedUsers': FieldValue.arrayUnion([otherUser.uid]),
+      });
+      try {
+        final otherUserDoc = await userCollection.doc(otherUser.uid).get();
+        final otherUserFromMap = otherUserDoc.data() as Map<String, dynamic>;
+        final otherUserFromFirestore = mememates.User.fromMap(otherUserFromMap);
+        final hasLiked = otherUserFromFirestore.likedUsers
+            .contains(currentUserFromFirebase.uid);
+        final match = Match(
+          userId: currentUserFromFirebase.uid,
+          hasLiked: hasLiked,
+          hasSentMeme: false,
+        );
+        await userCollection.doc(otherUser.uid).update(
+          {
+            'matches': FieldValue.arrayUnion([match.toMap()]),
+          },
+        );
+      } catch (e) {
+        print('Error updating other user: $e');
+      }
+    }
+  } catch (e) {
+    print('Error updating current user: $e');
   }
 }
 
@@ -47,6 +90,10 @@ Future<List<mememates.User>> fetchAllUsers() async {
   try {
     final querySnapshot =
         await usersCollection.where('uid', isNotEqualTo: currentUserUid).get();
+    final temp = querySnapshot.docs[0].data()['matches'];
+    print("First user's: $temp");
+    final matches = temp.map((e) => Match.fromMap(e)).toList();
+    print(matches);
     List<mememates.User> users = querySnapshot.docs.map((doc) {
       return mememates.User.fromMap(doc.data());
     }).toList();
@@ -72,14 +119,15 @@ Future<String> uploadProfilePicture(File imageFile) async {
   return downloadUrl;
 }
 
-Future<String> uploadMoodBoardImage(File imageFile) async {
+Future<String> uploadMoodBoardImage(File imageFile, int index) async {
   final user = FirebaseAuth.instance.currentUser;
   Reference storageRef = FirebaseStorage.instance
       .ref()
       .child('users')
       .child(user!.uid)
       .child('mood_board_images')
-      .child('${DateTime.now().millisecondsSinceEpoch.toString()}.jpg');
+      .child(
+          '${DateTime.now().millisecondsSinceEpoch.toString()}_${index.toString()}.jpg');
   final toUpload = await compressFile(imageFile);
   UploadTask uploadTask = storageRef.putFile(toUpload);
   TaskSnapshot snapshot = await uploadTask;

@@ -5,7 +5,13 @@ import 'package:mememates/models/User.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
   User user;
-  ProfileDetailScreen({super.key, required this.user});
+  void Function() onLike;
+  void Function() onDislike;
+  ProfileDetailScreen(
+      {super.key,
+      required this.user,
+      required this.onLike,
+      required this.onDislike});
 
   @override
   State<ProfileDetailScreen> createState() => _ProfileDetailScreenState();
@@ -15,6 +21,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -47,17 +54,26 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                             icon: AntDesign.close_outline,
                             backgroundColor: Colors.white,
                             iconColor: Colors.orange,
+                            onTap: () {
+                              widget.onDislike();
+                              Navigator.of(context).pop();
+                            },
                           ),
                           _buildActionButton(
                             icon: IconsaxBold.heart,
                             backgroundColor: const Color(0xFFE94057),
                             iconColor: Colors.white,
                             size: 64,
+                            onTap: () {
+                              widget.onLike();
+                              Navigator.of(context).pop();
+                            },
                           ),
                           _buildActionButton(
                             icon: Icons.star,
                             backgroundColor: Colors.white,
                             iconColor: Colors.purple,
+                            onTap: () {},
                           ),
                         ],
                       ),
@@ -157,6 +173,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     required Color backgroundColor,
     required Color iconColor,
     double size = 48,
+    required VoidCallback onTap,
   }) {
     return Container(
       height: size,
@@ -173,10 +190,13 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
           ),
         ],
       ),
-      child: Icon(
-        icon,
-        color: iconColor,
-        size: size * 0.5,
+      child: IconButton(
+        onPressed: onTap,
+        icon: Icon(
+          icon,
+          color: iconColor,
+        ),
+        iconSize: size * 0.5,
       ),
     );
   }

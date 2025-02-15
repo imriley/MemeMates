@@ -1,6 +1,8 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
+import 'package:mememates/components/appbar.dart';
 import 'package:mememates/screens/discover/home_screen.dart';
+import 'package:mememates/screens/likes/likes_screen.dart';
 import 'package:mememates/screens/messaging/chats_screen.dart';
 import 'package:mememates/screens/premium/premium_features_screen.dart';
 
@@ -19,8 +21,10 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return HomeScreen();
       case 1:
-        return ChatsScreen();
+        return LikesScreen();
       case 2:
+        return ChatsScreen();
+      case 3:
         return PremiumFeaturesScreen();
       default:
         return HomeScreen();
@@ -33,6 +37,15 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: Colors.white,
       body: Center(
         child: _buildPage(_selectedIndex),
+      ),
+      appBar: TopAppBar(
+        title: _selectedIndex == 0
+            ? "Discover"
+            : _selectedIndex == 1
+                ? "Liked You"
+                : _selectedIndex == 2
+                    ? "Messages"
+                    : "Premium",
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -62,6 +75,18 @@ class _MainScreenState extends State<MainScreen> {
                 color: Color(0xFFe94057),
               ),
               label: "Discover",
+            ),
+            NavigationDestination(
+              icon: Icon(
+                IconsaxOutline.lovely,
+                size: 28,
+              ),
+              selectedIcon: Icon(
+                IconsaxBold.lovely,
+                size: 28,
+                color: Color(0xFFe94057),
+              ),
+              label: "Likes",
             ),
             NavigationDestination(
               icon: Icon(

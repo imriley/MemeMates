@@ -46,37 +46,38 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  void handleDislike() {
+    setState(() {
+      users.removeAt(currentCount);
+    });
+    if (users.isNotEmpty) {
+      if (currentCount > 0) {
+        setState(() {
+          currentCount--;
+        });
+      }
+    }
+  }
+
+  void handleLike() async {
+    await updateLikesAndMatches(users[currentCount]);
+    setState(() {
+      users.removeAt(currentCount);
+    });
+    if (users.isNotEmpty) {
+      if (currentCount > 0) {
+        setState(() {
+          currentCount--;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        title: Text(
-          "Discover",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {},
-            child: profilePictureUrl.isEmpty
-                ? CircleAvatar()
-                : CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      profilePictureUrl,
-                    ),
-                  ),
-          ),
-          SizedBox(
-            width: 24,
-          ),
-        ],
-      ),
       body: Padding(
         padding: EdgeInsets.all(
           16,
@@ -91,6 +92,8 @@ class _HomeScreenState extends State<HomeScreen>
                     CupertinoPageRoute(
                       builder: (context) => ProfileDetailScreen(
                         user: users[currentCount],
+                        onDislike: handleDislike,
+                        onLike: handleLike,
                       ),
                     ),
                   );
@@ -103,6 +106,8 @@ class _HomeScreenState extends State<HomeScreen>
                         fullscreenDialog: true,
                         builder: (context) => ProfileDetailScreen(
                           user: users[currentCount],
+                          onDislike: handleDislike,
+                          onLike: handleLike,
                         ),
                       ),
                     );
@@ -120,17 +125,13 @@ class _HomeScreenState extends State<HomeScreen>
                 _buildActionButton(
                   icon: AntDesign.close_outline,
                   color: Colors.orange,
-                  onTap: () {
-                    // Handle dislike
-                  },
+                  onTap: handleDislike,
                 ),
                 _buildActionButton(
                   icon: IconsaxBold.heart,
                   color: const Color(0xFFE94057),
                   size: 64,
-                  onTap: () {
-                    // Handle like
-                  },
+                  onTap: handleLike,
                 ),
                 _buildActionButton(
                   icon: Icons.star,
@@ -171,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen>
                 height: double.infinity,
                 enlargeCenterPage: false,
                 viewportFraction: 1.0,
+                initialPage: 0,
               ),
               items: [user.profileImageUrl, ...user.moodBoard!.images]
                   .map((imageUrl) => CachedNetworkImage(

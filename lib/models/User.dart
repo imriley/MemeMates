@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mememates/models/MoodBoard.dart';
+import 'package:mememates/models/Match.dart';
 
 class User {
   String? uid;
@@ -16,7 +17,8 @@ class User {
   String? profileImageUrl;
   MoodBoard? moodBoard;
   String? profileAnthem;
-  List<String> matches;
+  List<String> likedUsers;
+  List<dynamic> matches;
 
   User({
     this.uid,
@@ -33,6 +35,7 @@ class User {
     this.profileImageUrl,
     this.moodBoard,
     this.profileAnthem,
+    this.likedUsers = const [],
     this.matches = const [],
   });
 
@@ -52,6 +55,7 @@ class User {
       'profileImageUrl': profileImageUrl,
       'moodBoard': moodBoard?.toMap(),
       'profileAnthem': profileAnthem,
+      'likedUsers': likedUsers,
       'matches': matches,
     };
   }
@@ -75,7 +79,13 @@ class User {
       moodBoard:
           map['moodBoard'] != null ? MoodBoard.fromMap(map['moodBoard']) : null,
       profileAnthem: map['profileAnthem'],
-      matches: List<String>.from(map['matches']),
+      likedUsers:
+          map['likedUsers'] != null ? List<String>.from(map['likedUsers']) : [],
+      matches: map['matches']
+          .map(
+            (e) => {Match.fromMap(e)},
+          )
+          .toList(),
     );
   }
 

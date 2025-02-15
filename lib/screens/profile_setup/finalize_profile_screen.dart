@@ -53,9 +53,7 @@ class _FinalizeProfileScreenState extends State<FinalizeProfileScreen> {
       );
       List<Future<String>> uploadTasks = [];
       for (var i = 1; i < images.length; i++) {
-        uploadTasks.add(uploadMoodBoardImage(
-          File(images[i].path),
-        ));
+        uploadTasks.add(uploadMoodBoardImage(File(images[i].path), i));
       }
       List<String> imagesUrls = [];
       await Future.wait(uploadTasks).then((downloadUrls) {
@@ -70,7 +68,7 @@ class _FinalizeProfileScreenState extends State<FinalizeProfileScreen> {
       setState(() {
         isProcessing = false;
       });
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         CupertinoPageRoute(
           builder: (context) => MainScreen(),
