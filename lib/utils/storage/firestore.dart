@@ -60,6 +60,42 @@ Future<void> updateLikesAndMatches(mememates.User otherUser) async {
   }
 }
 
+Future<void> removeLikeAndMatch(mememates.User otherUser) async {
+  final currentUserFromFirebase = FirebaseAuth.instance.currentUser;
+  final userCollection = FirebaseFirestore.instance.collection('users');
+  if (currentUserFromFirebase == null) {
+    return;
+  }
+
+  try {
+    final currentUserQuerySnapshot = await userCollection
+        .where('uid', isEqualTo: currentUserFromFirebase.uid)
+        .get();
+    if (currentUserQuerySnapshot.docs.isNotEmpty) {
+      final currentUserDoc = currentUserQuerySnapshot.docs.first;
+      final currentUserRef = currentUserDoc.reference;
+      await currentUserRef.update({
+        'matches': FieldValue.arrayRemove([
+          {
+            'userId': otherUser.uid,
+            'hasLiked': false,
+            'hasSentMeme': false,
+          }
+        ]),
+      });
+      try {
+        await userCollection.doc(otherUser.uid).update({
+          "likedUsers": FieldValue.arrayRemove([currentUserFromFirebase.uid])
+        });
+      } catch (e) {
+        print('Error updating other user: $e');
+      }
+    }
+  } catch (e) {
+    print('Error updating current user: $e');
+  }
+}
+
 Future<mememates.User?> getCurrentUser() async {
   final currentUser = FirebaseAuth.instance.currentUser;
   if (currentUser == null) {
