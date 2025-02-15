@@ -18,7 +18,7 @@ class User {
   MoodBoard? moodBoard;
   String? profileAnthem;
   List<String> likedUsers;
-  List<dynamic> matches;
+  List<Match> matches;
 
   User({
     this.uid,
@@ -81,11 +81,16 @@ class User {
       profileAnthem: map['profileAnthem'],
       likedUsers:
           map['likedUsers'] != null ? List<String>.from(map['likedUsers']) : [],
-      matches: map['matches']
-          .map(
-            (e) => {Match.fromMap(e)},
-          )
-          .toList(),
+      matches: map['matches'] != null
+          ? List<Match>.from((map['matches'] as List).map((match) {
+              if (match is Map<String, dynamic>) {
+                return Match.fromMap(match);
+              } else {
+                print("Invalid match data: $match");
+                return null;
+              }
+            }).where((match) => match != null))
+          : [],
     );
   }
 

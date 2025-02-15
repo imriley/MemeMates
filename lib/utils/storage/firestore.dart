@@ -90,10 +90,6 @@ Future<List<mememates.User>> fetchAllUsers() async {
   try {
     final querySnapshot =
         await usersCollection.where('uid', isNotEqualTo: currentUserUid).get();
-    final temp = querySnapshot.docs[0].data()['matches'];
-    print("First user's: $temp");
-    final matches = temp.map((e) => Match.fromMap(e)).toList();
-    print(matches);
     List<mememates.User> users = querySnapshot.docs.map((doc) {
       return mememates.User.fromMap(doc.data());
     }).toList();
