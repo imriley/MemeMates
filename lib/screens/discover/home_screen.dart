@@ -1,12 +1,15 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/models/User.dart';
 import 'package:mememates/screens/discover/profile_detail_screen.dart';
+import 'package:mememates/utils/providers/audio_player_provider.dart';
 import 'package:mememates/utils/storage/firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,21 +25,35 @@ class _HomeScreenState extends State<HomeScreen>
   List<User> users = [];
   int currentCount = 0;
   String profilePictureUrl = '';
+  late AudioPlayerProvider audioPlayerProvider;
 
   @override
   void initState() {
     super.initState();
+    audioPlayerProvider =
+        Provider.of<AudioPlayerProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getProfilePictureUrl();
-      fetchUsers();
+      fetchUsersAndPlayAnthem();
     });
   }
 
-  Future<void> fetchUsers() async {
+  @override
+  void dispose() {
+    audioPlayerProvider.player.stop();
+    super.dispose();
+  }
+
+  Future<void> fetchUsersAndPlayAnthem() async {
     final data = await fetchAllUsers();
-    setState(() {
-      users = data;
-    });
+    if (mounted) {
+      setState(() {
+        users = data;
+      });
+
+      if (users.isNotEmpty && users[currentCount].profileMusicTitle != null) {
+        await playAnthem(users[currentCount].profileMusicTitle!);
+      }
+    }
   }
 
   Future<void> getProfilePictureUrl() async {
@@ -46,7 +63,18 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-  void handleDislike() {
+  Future<void> playAnthem(String title) async {
+    if (title.isEmpty) return;
+    final audioUrl = await audioPlayerProvider.fetchYoutubeUrl(title);
+    if (audioUrl == null.toString()) {
+      return;
+    }
+    await audioPlayerProvider.player.setSource(UrlSource(audioUrl));
+    await audioPlayerProvider.player.resume();
+  }
+
+  Future<void> handleDislike() async {
+    await audioPlayerProvider.player.stop();
     setState(() {
       users.removeAt(currentCount);
     });
@@ -57,10 +85,17 @@ class _HomeScreenState extends State<HomeScreen>
         });
       }
     }
+    if (users.isNotEmpty && users[currentCount].profileMusicTitle != null) {
+      await playAnthem(users[currentCount].profileMusicTitle!);
+    }
+    if (users.isEmpty) {
+      await audioPlayerProvider.player.stop();
+    }
   }
 
-  void handleLike() async {
+  Future<void> handleLike() async {
     await updateLikesAndMatches(users[currentCount]);
+    await audioPlayerProvider.player.stop();
     setState(() {
       users.removeAt(currentCount);
     });
@@ -70,6 +105,9 @@ class _HomeScreenState extends State<HomeScreen>
           currentCount--;
         });
       }
+    }
+    if (users.isNotEmpty && users[currentCount].profileMusicTitle != null) {
+      await playAnthem(users[currentCount].profileMusicTitle!);
     }
   }
 

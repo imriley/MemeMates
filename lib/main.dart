@@ -7,7 +7,7 @@ import 'package:mememates/firebase_options.dart';
 import 'package:mememates/screens/main_screen.dart';
 import 'package:mememates/screens/onboarding/welcome_screen.dart';
 import 'package:mememates/screens/splash_screen.dart';
-import 'package:mememates/utils/providers/discover_user_provider.dart';
+import 'package:mememates/utils/providers/audio_player_provider.dart';
 import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ void main() async {
           create: (context) => UserProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => DiscoverUserProvider(),
+          create: (context) => AudioPlayerProvider(),
         )
       ],
       child: const MemeMates(),

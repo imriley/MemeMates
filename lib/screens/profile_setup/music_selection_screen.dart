@@ -6,10 +6,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/screens/profile_setup/finalize_profile_screen.dart';
 import 'package:mememates/utils/misc/debouncer.dart';
+import 'package:mememates/utils/providers/audio_player_provider.dart';
 import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart' as sp;
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicSelectionScreen extends StatefulWidget {
   const MusicSelectionScreen({super.key});
@@ -21,10 +21,9 @@ class MusicSelectionScreen extends StatefulWidget {
 class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
   late sp.SpotifyApi spotify;
   List<sp.Track> tracks = [];
+  late AudioPlayerProvider audioPlayerProvider;
   TextEditingController searchController = TextEditingController();
   final _debouncer = Debouncer(milliseconds: 1000);
-  final _youtube = YoutubeExplode();
-  final _player = AudioPlayer();
   String currentlyPlaying = "";
   String isProcessing = "";
   String selectedSongImage = '';
@@ -42,6 +41,8 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
   @override
   void initState() {
     super.initState();
+    audioPlayerProvider =
+        Provider.of<AudioPlayerProvider>(context, listen: false);
     _initializeSpotify();
   }
 
@@ -69,18 +70,6 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
         tracks = [];
       });
       print("Error searching tracks: $e");
-    }
-  }
-
-  Future<String> fetchYoutubeUrl(String name) async {
-    try {
-      final result = await _youtube.search.search(name);
-      final videoId = result.first.id.value;
-      final manifest = await _youtube.videos.streamsClient.getManifest(videoId);
-      final audioUrl = manifest.audioOnly.first.url;
-      return audioUrl.toString();
-    } catch (e) {
-      return null.toString();
     }
   }
 
@@ -114,13 +103,14 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                 setState(() {
                   submitProcessing = true;
                 });
-                final audioUrl = await fetchYoutubeUrl(selectedSongTitle);
                 final userProvider =
                     Provider.of<UserProvider>(context, listen: false);
                 userProvider.updateUser(userProvider.user!.copyWith(
-                  profileAnthem: audioUrl,
+                  profileMusicTitle: selectedSongTitle,
+                  profileMusicThumbnailUrl: selectedSongImage,
+                  profileMusicArtist: selectedSongArtist,
                 ));
-                await _player.stop();
+                await audioPlayerProvider.player.stop();
                 Navigator.push(
                   context,
                   cupertino.CupertinoPageRoute(
@@ -274,7 +264,6 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                             final track = tracks[index];
                             return ListTile(
                               onTap: () async {
-                                print('clicked');
                                 setState(() {
                                   tracks = [];
                                   selectedSongArtist = track.artists!.isNotEmpty
@@ -311,7 +300,7 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                                     isProcessing = track.id!;
                                   });
                                   if (currentlyPlaying == track.id!) {
-                                    await _player.pause();
+                                    await audioPlayerProvider.player.pause();
                                     setState(() {
                                       currentlyPlaying = "";
                                     });
@@ -319,14 +308,17 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                                     setState(() {
                                       currentlyPlaying = '';
                                     });
-                                    final audioUrl = await fetchYoutubeUrl(
+                                    final audioUrl = await audioPlayerProvider
+                                        .fetchYoutubeUrl(
                                       track.name.toString(),
                                     );
                                     if (audioUrl == null.toString()) {
-                                      return; // Update this!
+                                      return;
                                     }
-                                    await _player
-                                        .play(UrlSource(audioUrl.toString()));
+                                    await audioPlayerProvider.player.setSource(
+                                      UrlSource(audioUrl.toString()),
+                                    );
+                                    await audioPlayerProvider.player.resume();
                                     setState(() {
                                       currentlyPlaying = track.id!;
                                     });

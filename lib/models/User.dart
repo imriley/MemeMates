@@ -16,7 +16,9 @@ class User {
   List<String> interests;
   String? profileImageUrl;
   MoodBoard? moodBoard;
-  String? profileAnthem;
+  String? profileMusicTitle;
+  String? profileMusicThumbnailUrl;
+  String? profileMusicArtist;
   List<String> likedUsers;
   List<Match> matches;
 
@@ -34,7 +36,9 @@ class User {
     this.interests = const [],
     this.profileImageUrl,
     this.moodBoard,
-    this.profileAnthem,
+    this.profileMusicTitle,
+    this.profileMusicThumbnailUrl,
+    this.profileMusicArtist,
     this.likedUsers = const [],
     this.matches = const [],
   });
@@ -54,7 +58,9 @@ class User {
       'interests': interests,
       'profileImageUrl': profileImageUrl,
       'moodBoard': moodBoard?.toMap(),
-      'profileAnthem': profileAnthem,
+      'profileMusicTitle': profileMusicTitle,
+      "profileMusicThumbnailUrl": profileMusicThumbnailUrl,
+      'profileMusicArtist': profileMusicArtist,
       'likedUsers': likedUsers,
       'matches': matches,
     };
@@ -78,7 +84,9 @@ class User {
       profileImageUrl: map['profileImageUrl'],
       moodBoard:
           map['moodBoard'] != null ? MoodBoard.fromMap(map['moodBoard']) : null,
-      profileAnthem: map['profileAnthem'],
+      profileMusicTitle: map['profileMusicTitle'],
+      profileMusicThumbnailUrl: map['profileMusicThumbnailUrl'],
+      profileMusicArtist: map['profileMusicArtist'],
       likedUsers:
           map['likedUsers'] != null ? List<String>.from(map['likedUsers']) : [],
       matches: map['matches'] != null
@@ -108,7 +116,9 @@ class User {
     List<String>? interests,
     String? profileImageUrl,
     MoodBoard? moodBoard,
-    String? profileAnthem,
+    String? profileMusicTitle,
+    String? profileMusicThumbnailUrl,
+    String? profileMusicArtist,
   }) {
     return User(
       uid: uid ?? this.uid,
@@ -124,13 +134,16 @@ class User {
       interests: interests ?? this.interests,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       moodBoard: moodBoard ?? this.moodBoard,
-      profileAnthem: profileAnthem ?? this.profileAnthem,
+      profileMusicTitle: profileMusicTitle ?? this.profileMusicTitle,
+      profileMusicThumbnailUrl:
+          profileMusicThumbnailUrl ?? this.profileMusicThumbnailUrl,
+      profileMusicArtist: profileMusicArtist ?? this.profileMusicArtist,
       matches: matches,
     );
   }
 
   @override
   String toString() {
-    return 'User{uid: $uid, email: $email, name: $name, isEmailVerified: $isEmailVerified, dateOfBirth: $dateOfBirth, age: $age, gender: $gender, preferenceGender: $preferenceGender, preferenceAgeMin: $preferenceAgeMin, preferenceAgeMax: $preferenceAgeMax, interests: $interests, profileImageUrl: $profileImageUrl, moodBoard: $moodBoard, profileAnthem: $profileAnthem, matches: $matches}';
+    return 'User{uid: $uid, email: $email, name: $name, isEmailVerified: $isEmailVerified, dateOfBirth: $dateOfBirth, age: $age, gender: $gender, preferenceGender: $preferenceGender, preferenceAgeMin: $preferenceAgeMin, preferenceAgeMax: $preferenceAgeMax, interests: $interests, profileImageUrl: $profileImageUrl, moodBoard: $moodBoard, profileMusicTitle: $profileMusicTitle, profileMusicThumbnailUrl: $profileMusicThumbnailUrl, profileMusicArtist: $profileMusicArtist, likedUsers: $likedUsers, matches: $matches}';
   }
 }

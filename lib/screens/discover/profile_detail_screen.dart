@@ -5,8 +5,8 @@ import 'package:mememates/models/User.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
   User user;
-  void Function() onLike;
-  void Function() onDislike;
+  Future<void> Function() onLike;
+  Future<void> Function() onDislike;
   ProfileDetailScreen(
       {super.key,
       required this.user,
@@ -54,8 +54,8 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                             icon: AntDesign.close_outline,
                             backgroundColor: Colors.white,
                             iconColor: Colors.orange,
-                            onTap: () {
-                              widget.onDislike();
+                            onTap: () async {
+                              await widget.onDislike();
                               Navigator.of(context).pop();
                             },
                           ),
@@ -64,8 +64,8 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                             backgroundColor: const Color(0xFFE94057),
                             iconColor: Colors.white,
                             size: 64,
-                            onTap: () {
-                              widget.onLike();
+                            onTap: () async {
+                              await widget.onLike();
                               Navigator.of(context).pop();
                             },
                           ),
