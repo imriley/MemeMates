@@ -19,6 +19,27 @@ Future<void> addUser(mememates.User user) async {
   }
 }
 
+Future<void> updateMemeLikedUser(Meme meme) async {
+  final currentUser = FirebaseAuth.instance.currentUser;
+  final memeCollection = FirebaseFirestore.instance.collection('memes');
+  if (currentUser == null) {
+    return;
+  }
+  try {
+    final memeQuerySnapshot =
+        await memeCollection.where('url', isEqualTo: meme.url).get();
+    if (memeQuerySnapshot.docs.isNotEmpty) {
+      final memeDoc = memeQuerySnapshot.docs.first;
+      final memeRef = memeDoc.reference;
+      await memeRef.update({
+        'likedUsers': FieldValue.arrayUnion([currentUser.uid]),
+      });
+    }
+  } catch (e) {
+    print('Error updating liked users in meme: $e');
+  }
+}
+
 Future<void> updateLikesAndMatches(mememates.User otherUser) async {
   final currentUserFromFirebase = FirebaseAuth.instance.currentUser;
   final userCollection = FirebaseFirestore.instance.collection('users');
@@ -116,35 +137,28 @@ Future<mememates.User?> getCurrentUser() async {
   }
 }
 
-// Future<List<mememates.User>> fetchAllUsers() async {
-//   final currentUser = FirebaseAuth.instance.currentUser;
-//   if (currentUser == null) {
-//     return [];
-//   }
-//   final usersCollection = FirebaseFirestore.instance.collection('users');
-//   final currentUserUid = currentUser.uid;
+String getCurrentUserID() {
+  return FirebaseAuth.instance.currentUser!.uid;
+}
 
-//   try {
-//     final querySnapshot =
-//         await usersCollection.where('uid', isNotEqualTo: currentUserUid).get();
-//     List<mememates.User> users = querySnapshot.docs.map((doc) {
-//       return mememates.User.fromMap(doc.data());
-//     }).toList();
-
-//     return users;
-//   } catch (e) {
-//     print('Error fetching users: $e');
-//     return [];
-//   }
-// }
+Future<mememates.User?> fetchUser(String userId) async {
+  final usersCollection = FirebaseFirestore.instance.collection('users');
+  try {
+    final querySnapshot =
+        await usersCollection.where('uid', isEqualTo: userId).get();
+    final user = mememates.User.fromMap(querySnapshot.docs.first.data());
+    return user;
+  } catch (e) {
+    print('Something went wrong: $e');
+  }
+  return null;
+}
 
 Future<List<Meme>> fetchAllMemes() async {
   final memesCollection = FirebaseFirestore.instance.collection('memes');
   try {
     final querySnapshot = await memesCollection.get();
-    print(querySnapshot.docs);
     List<Meme> memes = querySnapshot.docs.map((doc) {
-      print(doc);
       return Meme.fromMap(doc.data());
     }).toList();
     return memes;
