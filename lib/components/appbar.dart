@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mememates/models/User.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:mememates/utils/storage/firestore.dart';
+import 'package:provider/provider.dart';
 
 class TopAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
-  TopAppBar({super.key, required this.title});
+  const TopAppBar({super.key, required this.title});
 
   @override
   State<TopAppBar> createState() => _TopAppBarState();
@@ -28,6 +30,8 @@ class _TopAppBarState extends State<TopAppBar> {
       currentUser = user!;
       profileImageUrl = user.profileImageUrl!;
     });
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.updateUser(user!);
   }
 
   @override
