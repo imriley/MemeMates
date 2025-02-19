@@ -28,29 +28,32 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     playAnthem();
   }
 
-  @override
-  void dispose() {
-    audioPlayerProvider.player.stop();
-    super.dispose();
-  }
-
   Future<void> playAnthem() async {
-    if (mounted) {
-      if (widget.user.profileMusicTitle!.isNotEmpty) {
-        final audioUrl = await audioPlayerProvider.fetchYoutubeUrl(
-          widget.user.profileMusicTitle!,
-        );
-        if (audioUrl == null.toString()) return;
+    if (widget.user.profileMusicTitle!.isNotEmpty) {
+      final audioUrl = await audioPlayerProvider.fetchYoutubeUrl(
+        widget.user.profileMusicTitle!,
+      );
+      if (audioUrl == null.toString()) return;
+      if (mounted) {
         await audioPlayerProvider.player.setSource(UrlSource(audioUrl));
         await audioPlayerProvider.player.resume();
       }
     }
   }
 
+  Future<void> stopAnthem() async {
+    await audioPlayerProvider.player.stop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          stopAnthem();
+        }
+      },
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -78,7 +81,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                           iconColor: Colors.orange,
                           onTap: () async {
                             // await widget.onDislike();
-                            Navigator.of(context).pop();
+                            Navigator.pop(context, true);
                           },
                         ),
                         _buildActionButton(
