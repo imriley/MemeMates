@@ -1,11 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// main.dart
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mememates/firebase_options.dart';
-import 'package:mememates/screens/main_screen.dart';
-import 'package:mememates/screens/onboarding/welcome_screen.dart';
 import 'package:mememates/screens/splash_screen.dart';
 import 'package:mememates/utils/providers/audio_player_provider.dart';
 import 'package:mememates/utils/providers/user_provider.dart';
@@ -45,21 +43,7 @@ class MemeMates extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.outfitTextTheme(),
       ),
-      home: FutureBuilder<User?>(
-        future: FirebaseAuth.instance.authStateChanges().first,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return SplashScreen();
-          } else if (snapshot.hasError) {
-            print("Something went wrong: ${snapshot.error}");
-            return WelcomeScreen();
-          } else if (snapshot.data != null) {
-            return MainScreen();
-          } else {
-            return WelcomeScreen();
-          }
-        },
-      ),
+      home: const SplashScreen(),
     );
   }
 }
