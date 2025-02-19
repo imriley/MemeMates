@@ -20,6 +20,7 @@ class User {
   String? profileMusicThumbnailUrl;
   String? profileMusicArtist;
   List<String> likedUsers;
+  List<String> skippedUsers;
   List<Match> matches;
 
   User({
@@ -40,6 +41,7 @@ class User {
     this.profileMusicThumbnailUrl,
     this.profileMusicArtist,
     this.likedUsers = const [],
+    this.skippedUsers = const [],
     this.matches = const [],
   });
 
@@ -62,6 +64,7 @@ class User {
       "profileMusicThumbnailUrl": profileMusicThumbnailUrl,
       'profileMusicArtist': profileMusicArtist,
       'likedUsers': likedUsers,
+      'skippedUsers': skippedUsers,
       'matches': matches,
     };
   }
@@ -89,6 +92,9 @@ class User {
       profileMusicArtist: map['profileMusicArtist'],
       likedUsers:
           map['likedUsers'] != null ? List<String>.from(map['likedUsers']) : [],
+      skippedUsers: map['skippedUsers'] != null
+          ? List<String>.from(map['skippedUsers'])
+          : [],
       matches: map['matches'] != null
           ? List<Match>.from((map['matches'] as List).map((match) {
               if (match is Map<String, dynamic>) {
@@ -119,6 +125,9 @@ class User {
     String? profileMusicTitle,
     String? profileMusicThumbnailUrl,
     String? profileMusicArtist,
+    List<String>? likedUsers,
+    List<String>? skippedUsers,
+    List<Match>? matches,
   }) {
     return User(
       uid: uid ?? this.uid,
@@ -138,12 +147,14 @@ class User {
       profileMusicThumbnailUrl:
           profileMusicThumbnailUrl ?? this.profileMusicThumbnailUrl,
       profileMusicArtist: profileMusicArtist ?? this.profileMusicArtist,
-      matches: matches,
+      likedUsers: likedUsers ?? this.likedUsers,
+      skippedUsers: skippedUsers ?? this.skippedUsers,
+      matches: matches ?? this.matches,
     );
   }
 
   @override
   String toString() {
-    return 'User{uid: $uid, email: $email, name: $name, isEmailVerified: $isEmailVerified, dateOfBirth: $dateOfBirth, age: $age, gender: $gender, preferenceGender: $preferenceGender, preferenceAgeMin: $preferenceAgeMin, preferenceAgeMax: $preferenceAgeMax, interests: $interests, profileImageUrl: $profileImageUrl, moodBoard: $moodBoard, profileMusicTitle: $profileMusicTitle, profileMusicThumbnailUrl: $profileMusicThumbnailUrl, profileMusicArtist: $profileMusicArtist, likedUsers: $likedUsers, matches: $matches}';
+    return 'User{uid: $uid, email: $email, name: $name, isEmailVerified: $isEmailVerified, dateOfBirth: $dateOfBirth, age: $age, gender: $gender, preferenceGender: $preferenceGender, preferenceAgeMin: $preferenceAgeMin, preferenceAgeMax: $preferenceAgeMax, interests: $interests, profileImageUrl: $profileImageUrl, moodBoard: $moodBoard, profileMusicTitle: $profileMusicTitle, profileMusicThumbnailUrl: $profileMusicThumbnailUrl, profileMusicArtist: $profileMusicArtist, likedUsers: $likedUsers, skippedUsers: $skippedUsers, matches: $matches}';
   }
 }
