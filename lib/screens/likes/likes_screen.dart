@@ -125,10 +125,6 @@ class _LikesScreenState extends State<LikesScreen> {
                           fullscreenDialog: true,
                           builder: (context) => ProfileDetailScreen(
                             user: matchedUser,
-                            onLike: onLike,
-                            onDislike: () async {
-                              await removeLikeAndMatch(matchedUser);
-                            },
                           ),
                         ),
                       );
