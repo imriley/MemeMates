@@ -9,6 +9,13 @@ class Meme {
   }
 
   factory Meme.fromMap(Map<String, dynamic> map) {
-    return Meme(url: map['url'], likedUsers: map['likedUsers']);
+    List<dynamic> dynamicList = map['likedUsers'] ?? [];
+    List<String> stringList =
+        dynamicList.map((item) => item.toString()).toList();
+
+    return Meme(
+      url: map['url'],
+      likedUsers: stringList,
+    );
   }
 }
