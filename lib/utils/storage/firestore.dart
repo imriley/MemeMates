@@ -41,80 +41,69 @@ Future<void> updateMemeLikedUser(Meme meme) async {
 }
 
 Future<void> updateLikesAndMatches(mememates.User otherUser) async {
-  final currentUserFromFirebase = FirebaseAuth.instance.currentUser;
+  final currentUser = FirebaseAuth.instance.currentUser;
   final userCollection = FirebaseFirestore.instance.collection('users');
-  if (currentUserFromFirebase == null) {
-    return;
-  }
+  if (currentUser == null) return;
   try {
-    final currentUserQuerySnapshot = await userCollection
-        .where('uid', isEqualTo: currentUserFromFirebase.uid)
-        .get();
-
-    if (currentUserQuerySnapshot.docs.isNotEmpty) {
-      final currentUserDoc = currentUserQuerySnapshot.docs.first;
-      final currentUserRef = currentUserDoc.reference;
-      await currentUserRef.update({
-        'likedUsers': FieldValue.arrayUnion([otherUser.uid]),
-      });
-      try {
-        final otherUserDoc = await userCollection.doc(otherUser.uid).get();
-        final otherUserFromMap = otherUserDoc.data() as Map<String, dynamic>;
-        final otherUserFromFirestore = mememates.User.fromMap(otherUserFromMap);
-        final hasLiked = otherUserFromFirestore.likedUsers
-            .contains(currentUserFromFirebase.uid);
-        final match = Match(
-          userId: currentUserFromFirebase.uid,
-          hasLiked: hasLiked,
-          hasSentMeme: false,
-        );
-        await userCollection.doc(otherUser.uid).update(
-          {
-            'matches': FieldValue.arrayUnion([match.toMap()]),
-          },
-        );
-      } catch (e) {
-        print('Error updating other user: $e');
-      }
-    }
+    await userCollection.doc(currentUser.uid).update({
+      "likedUsers": FieldValue.arrayUnion([otherUser.uid]),
+    });
+    final otherUserDoc = await userCollection.doc(otherUser.uid!).get();
+    final otherUserFromMap = otherUserDoc.data() as Map<String, dynamic>;
+    final otherUserFromFirestore = mememates.User.fromMap(otherUserFromMap);
+    final hasLiked =
+        otherUserFromFirestore.likedUsers.contains(currentUser.uid);
+    final match = Match(
+      userId: currentUser.uid,
+      hasLiked: hasLiked,
+      hasSentMeme: false,
+    );
+    await userCollection.doc(otherUser.uid).update(
+      {
+        'matches': FieldValue.arrayUnion([match.toMap()]),
+      },
+    );
   } catch (e) {
-    print('Error updating current user: $e');
+    print("Error updating users: $e");
+  }
+}
+
+Future<void> skipUser(mememates.User otherUser) async {
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser == null) return;
+  final userCollection = FirebaseFirestore.instance.collection('users');
+  try {
+    await userCollection.doc(otherUser.uid).update({
+      "skippedUsers": FieldValue.arrayUnion([currentUser.uid])
+    });
+    await userCollection.doc(currentUser.uid).update({
+      "skippedUsers": FieldValue.arrayUnion([otherUser.uid])
+    });
+  } catch (e) {
+    print('Error skipping user: $e');
   }
 }
 
 Future<void> removeLikeAndMatch(mememates.User otherUser) async {
-  final currentUserFromFirebase = FirebaseAuth.instance.currentUser;
+  final currentUser = FirebaseAuth.instance.currentUser;
   final userCollection = FirebaseFirestore.instance.collection('users');
-  if (currentUserFromFirebase == null) {
-    return;
-  }
-
+  if (currentUser == null) return;
   try {
-    final currentUserQuerySnapshot = await userCollection
-        .where('uid', isEqualTo: currentUserFromFirebase.uid)
-        .get();
-    if (currentUserQuerySnapshot.docs.isNotEmpty) {
-      final currentUserDoc = currentUserQuerySnapshot.docs.first;
-      final currentUserRef = currentUserDoc.reference;
-      await currentUserRef.update({
-        'matches': FieldValue.arrayRemove([
-          {
-            'userId': otherUser.uid,
-            'hasLiked': false,
-            'hasSentMeme': false,
-          }
-        ]),
-      });
-      try {
-        await userCollection.doc(otherUser.uid).update({
-          "likedUsers": FieldValue.arrayRemove([currentUserFromFirebase.uid])
-        });
-      } catch (e) {
-        print('Error updating other user: $e');
-      }
-    }
+    await userCollection.doc(currentUser.uid).update({
+      "matches": FieldValue.arrayRemove([
+        {
+          'userId': otherUser.uid,
+          'hasLiked': false,
+          'hasSentMeme': false,
+        }
+      ])
+    });
+    await userCollection.doc(otherUser.uid).update({
+      "likedUsers": FieldValue.arrayRemove([currentUser.uid])
+    });
+    await skipUser(otherUser);
   } catch (e) {
-    print('Error updating current user: $e');
+    print('Error updating users: $e');
   }
 }
 
@@ -135,10 +124,6 @@ Future<mememates.User?> getCurrentUser() async {
     print('Something went wrong: $e');
     return null;
   }
-}
-
-String getCurrentUserID() {
-  return FirebaseAuth.instance.currentUser!.uid;
 }
 
 Future<mememates.User?> fetchUser(String userId) async {
