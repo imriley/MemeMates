@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:mememates/models/Meme.dart';
 import 'package:mememates/screens/discover/profile_detail_screen.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:mememates/utils/storage/firestore.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +20,8 @@ class _HomeScreenState extends State<HomeScreen>
   bool get wantKeepAlive => true;
   List<Meme> memes = [];
   bool isLoading = false;
+  late UserProvider userProvider =
+      Provider.of<UserProvider>(context, listen: false);
 
   @override
   void initState() {
@@ -48,13 +52,17 @@ class _HomeScreenState extends State<HomeScreen>
       // handle dislike
     }
     if (direction.name == 'right') {
-      final currentUserID = getCurrentUserID();
-      if (!meme.likedUsers.contains(currentUserID)) {
+      final currentUser = userProvider.user!;
+      if (!meme.likedUsers.contains(currentUser.uid)) {
         await updateMemeLikedUser(meme);
       }
       if (meme.likedUsers.isNotEmpty) {
-        final likedUsersExceptCurrent =
-            meme.likedUsers.where((uid) => uid != currentUserID).toList();
+        final likedUsersExceptCurrent = meme.likedUsers
+            .where((uid) =>
+                uid != currentUser.uid ||
+                !currentUser.skippedUsers.contains(uid) ||
+                !currentUser.likedUsers.contains(uid))
+            .toList();
         final random = Random();
         final randomIndex = random.nextInt(likedUsersExceptCurrent.length);
         final randomUserID = likedUsersExceptCurrent[randomIndex];
