@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:mememates/models/Meme.dart';
+import 'package:mememates/screens/discover/profile_detail_screen.dart';
 import 'package:mememates/utils/storage/firestore.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,8 +16,8 @@ class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  int currentIndex = 0;
   List<Meme> memes = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -26,10 +28,56 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> fetchMemes() async {
+    setState(() {
+      isLoading = true;
+    });
     final response = await fetchAllMemes();
     setState(() {
       memes = response;
+      isLoading = false;
     });
+  }
+
+  Future<bool> handleSwipe(
+    int previousIndex,
+    int? currentIndex,
+    CardSwiperDirection direction,
+  ) async {
+    final meme = memes[previousIndex];
+    if (direction.name == 'left') {
+      // handle dislike
+    }
+    if (direction.name == 'right') {
+      final currentUserID = getCurrentUserID();
+      if (!meme.likedUsers.contains(currentUserID)) {
+        await updateMemeLikedUser(meme);
+      }
+      if (meme.likedUsers.isNotEmpty) {
+        final likedUsersExceptCurrent =
+            meme.likedUsers.where((uid) => uid != currentUserID).toList();
+        final random = Random();
+        final randomIndex = random.nextInt(likedUsersExceptCurrent.length);
+        final randomUserID = likedUsersExceptCurrent[randomIndex];
+        final randomUser = await fetchUser(randomUserID);
+        if (randomUser != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return ProfileDetailScreen(user: randomUser);
+              },
+            ),
+          );
+        }
+      }
+    }
+    if (currentIndex == null) {
+      setState(() {
+        memes = [];
+      });
+    }
+
+    return true;
   }
 
   @override
@@ -37,73 +85,80 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      body: memes.isEmpty
+      body: isLoading
           ? Center(
-              child: Text('No memes found'),
+              child: CircularProgressIndicator(),
             )
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: CardSwiper(
-                    numberOfCardsDisplayed: 1,
-                    allowedSwipeDirection: AllowedSwipeDirection.symmetric(
-                      horizontal: true,
-                      vertical: false,
+          : memes.isEmpty
+              ? Center(
+                  child: Text('No memes found'),
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: CardSwiper(
+                        numberOfCardsDisplayed: 1,
+                        allowedSwipeDirection: AllowedSwipeDirection.symmetric(
+                          horizontal: true,
+                          vertical: false,
+                        ),
+                        cardsCount: memes.length,
+                        backCardOffset: Offset(40, 40),
+                        scale: 0.9,
+                        maxAngle: 90,
+                        isLoop: false,
+                        onSwipe: handleSwipe,
+                        cardBuilder: (
+                          context,
+                          index,
+                          horizontalThresholdPercentage,
+                          verticalThresholdPercentage,
+                        ) {
+                          final meme = memes[index];
+                          return Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.05),
+                                      spreadRadius: 2,
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.grey.withValues(alpha: 0.2),
+                                      Colors.grey.withValues(alpha: 0.7),
+                                    ],
+                                    stops: const [0.7, 1.0],
+                                  ),
+                                ),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(meme.url),
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                    cardsCount: memes.length,
-                    backCardOffset: Offset(40, 40),
-                    scale: 0.9,
-                    maxAngle: 90,
-                    cardBuilder: (
-                      context,
-                      index,
-                      horizontalThresholdPercentage,
-                      verticalThresholdPercentage,
-                    ) {
-                      final meme = memes[index];
-                      return Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.05),
-                                  spreadRadius: 2,
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.grey.withValues(alpha: 0.2),
-                                  Colors.grey.withValues(alpha: 0.7),
-                                ],
-                                stops: const [0.7, 1.0],
-                              ),
-                            ),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(meme.url),
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                  ],
                 ),
-              ],
-            ),
     );
   }
 }
