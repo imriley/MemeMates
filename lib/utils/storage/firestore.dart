@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:mememates/models/Meme.dart';
 import 'package:mememates/models/User.dart' as mememates;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mememates/models/Match.dart';
@@ -115,24 +116,40 @@ Future<mememates.User?> getCurrentUser() async {
   }
 }
 
-Future<List<mememates.User>> fetchAllUsers() async {
-  final currentUser = FirebaseAuth.instance.currentUser;
-  if (currentUser == null) {
-    return [];
-  }
-  final usersCollection = FirebaseFirestore.instance.collection('users');
-  final currentUserUid = currentUser.uid;
+// Future<List<mememates.User>> fetchAllUsers() async {
+//   final currentUser = FirebaseAuth.instance.currentUser;
+//   if (currentUser == null) {
+//     return [];
+//   }
+//   final usersCollection = FirebaseFirestore.instance.collection('users');
+//   final currentUserUid = currentUser.uid;
 
+//   try {
+//     final querySnapshot =
+//         await usersCollection.where('uid', isNotEqualTo: currentUserUid).get();
+//     List<mememates.User> users = querySnapshot.docs.map((doc) {
+//       return mememates.User.fromMap(doc.data());
+//     }).toList();
+
+//     return users;
+//   } catch (e) {
+//     print('Error fetching users: $e');
+//     return [];
+//   }
+// }
+
+Future<List<Meme>> fetchAllMemes() async {
+  final memesCollection = FirebaseFirestore.instance.collection('memes');
   try {
-    final querySnapshot =
-        await usersCollection.where('uid', isNotEqualTo: currentUserUid).get();
-    List<mememates.User> users = querySnapshot.docs.map((doc) {
-      return mememates.User.fromMap(doc.data());
+    final querySnapshot = await memesCollection.get();
+    print(querySnapshot.docs);
+    List<Meme> memes = querySnapshot.docs.map((doc) {
+      print(doc);
+      return Meme.fromMap(doc.data());
     }).toList();
-
-    return users;
+    return memes;
   } catch (e) {
-    print('Error fetching users: $e');
+    print('Error fetching memes: $e');
     return [];
   }
 }
