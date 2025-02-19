@@ -1,168 +1,164 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/models/User.dart';
+import 'package:mememates/utils/providers/audio_player_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
   User user;
-  Future<void> Function() onLike;
-  Future<void> Function() onDislike;
-  ProfileDetailScreen(
-      {super.key,
-      required this.user,
-      required this.onLike,
-      required this.onDislike});
+  ProfileDetailScreen({
+    super.key,
+    required this.user,
+  });
 
   @override
   State<ProfileDetailScreen> createState() => _ProfileDetailScreenState();
 }
 
 class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
+  late AudioPlayerProvider audioPlayerProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    audioPlayerProvider =
+        Provider.of<AudioPlayerProvider>(context, listen: false);
+    playAnthem();
+  }
+
+  @override
+  void dispose() {
+    audioPlayerProvider.player.stop();
+    super.dispose();
+  }
+
+  Future<void> playAnthem() async {
+    if (mounted) {
+      if (widget.user.profileMusicTitle!.isNotEmpty) {
+        final audioUrl = await audioPlayerProvider.fetchYoutubeUrl(
+          widget.user.profileMusicTitle!,
+        );
+        if (audioUrl == null.toString()) return;
+        await audioPlayerProvider.player.setSource(UrlSource(audioUrl));
+        await audioPlayerProvider.player.resume();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Stack(
-                  children: [
-                    GestureDetector(
-                      onVerticalDragUpdate: (details) {
-                        if (details.delta.dy > 20) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: Image.network(
-                        widget.user.profileImageUrl!,
-                        width: double.infinity,
-                        height: 450,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 20,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildActionButton(
-                            icon: AntDesign.close_outline,
-                            backgroundColor: Colors.white,
-                            iconColor: Colors.orange,
-                            onTap: () async {
-                              await widget.onDislike();
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          _buildActionButton(
-                            icon: IconsaxBold.heart,
-                            backgroundColor: const Color(0xFFE94057),
-                            iconColor: Colors.white,
-                            size: 64,
-                            onTap: () async {
-                              await widget.onLike();
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          _buildActionButton(
-                            icon: Icons.star,
-                            backgroundColor: Colors.white,
-                            iconColor: Colors.purple,
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Profile Info Section
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${widget.user.name}, ${widget.user.age}',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              IconsaxOutline.send_2,
-                              color: Color(0xFFE94057),
-                            ),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Interests',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: widget.user.interests
-                            .map((ele) => _buildInterestChip(ele))
-                            .toList(),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'MoodBoard',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      _buildGalleryGrid(),
-                    ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  Image.network(
+                    widget.user.profileImageUrl!,
+                    width: double.infinity,
+                    height: 450,
+                    fit: BoxFit.cover,
                   ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: MediaQuery.of(context).padding.top +
-                  10, // Adds padding for status bar
-              left: 16,
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      spreadRadius: 1,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+                  Positioned(
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildActionButton(
+                          icon: AntDesign.close_outline,
+                          backgroundColor: Colors.white,
+                          iconColor: Colors.orange,
+                          onTap: () async {
+                            // await widget.onDislike();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        _buildActionButton(
+                          icon: IconsaxBold.heart,
+                          backgroundColor: const Color(0xFFE94057),
+                          iconColor: Colors.white,
+                          size: 64,
+                          onTap: () async {
+                            // await widget.onLike();
+                            // Navigator.of(context).pop();
+                          },
+                        ),
+                        _buildActionButton(
+                          icon: Icons.star,
+                          backgroundColor: Colors.white,
+                          iconColor: Colors.purple,
+                          onTap: () {},
+                        ),
+                      ],
                     ),
+                  ),
+                ],
+              ),
+
+              // Profile Info Section
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${widget.user.name}, ${widget.user.age}',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            IconsaxOutline.send_2,
+                            color: Color(0xFFE94057),
+                          ),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Interests',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: widget.user.interests
+                          .map((ele) => _buildInterestChip(ele))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'MoodBoard',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildGalleryGrid(),
                   ],
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new),
-                  iconSize: 20,
-                  color: Colors.black,
-                  onPressed: () => Navigator.pop(context),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
