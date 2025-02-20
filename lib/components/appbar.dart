@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mememates/models/User.dart';
 import 'package:mememates/utils/providers/user_provider.dart';
-import 'package:mememates/utils/storage/firestore.dart';
 import 'package:provider/provider.dart';
 
 class TopAppBar extends StatefulWidget implements PreferredSizeWidget {
