@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mememates/screens/main_screen.dart';
 import 'package:mememates/screens/onboarding/welcome_screen.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
+import 'package:mememates/utils/storage/firestore.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,10 +23,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 3));
-
     if (mounted) {
       final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        final userFromFirebase = await getCurrentUser();
+        userProvider.updateUser(userFromFirebase!);
+      }
+      await Future.delayed(const Duration(seconds: 3));
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

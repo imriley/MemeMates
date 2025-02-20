@@ -20,18 +20,16 @@ class _TopAppBarState extends State<TopAppBar> {
   String profileImageUrl = '';
   @override
   void initState() {
-    super.initState();
     getUser();
+    super.initState();
   }
 
   Future<void> getUser() async {
-    final user = await getCurrentUser();
-    setState(() {
-      currentUser = user!;
-      profileImageUrl = user.profileImageUrl!;
-    });
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.updateUser(user!);
+    setState(() {
+      currentUser = userProvider.user!;
+      profileImageUrl = currentUser.profileImageUrl!;
+    });
   }
 
   @override
