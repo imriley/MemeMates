@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/models/User.dart';
 import 'package:mememates/utils/providers/audio_player_provider.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:mememates/utils/storage/firestore.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,8 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   late AudioPlayerProvider audioPlayerProvider;
   PlayerState? _playerState;
   bool isLoading = true;
+  late UserProvider userProvider =
+      Provider.of<UserProvider>(context, listen: false);
 
   @override
   void initState() {
@@ -99,6 +102,11 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                               backgroundColor: Colors.white,
                               iconColor: Colors.orange,
                               onTap: () async {
+                                userProvider
+                                    .updateUser(userProvider.user!.copyWith(
+                                  skippedUsers: userProvider.user!.skippedUsers
+                                    ..add(widget.user.uid!),
+                                ));
                                 await removeLikeAndMatch(widget.user);
                                 Navigator.pop(context, true);
                               },
@@ -109,8 +117,12 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                               iconColor: Colors.white,
                               size: 64,
                               onTap: () async {
-                                await updateLikesAndMatches(widget.user);
-                                Navigator.of(context).pop();
+                                final user = await likeUserAndMatch(
+                                    userProvider.user!, widget.user);
+                                userProvider.updateUser(user!);
+                                if (mounted) {
+                                  Navigator.of(context).pop();
+                                }
                               },
                             ),
                             _buildActionButton(

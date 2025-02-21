@@ -40,31 +40,55 @@ Future<void> updateMemeLikedUser(Meme meme) async {
   }
 }
 
-Future<void> updateLikesAndMatches(mememates.User otherUser) async {
-  final currentUser = FirebaseAuth.instance.currentUser;
+Future<mememates.User?> likeUserAndMatch(
+    mememates.User currentUser, mememates.User otherUser) async {
   final userCollection = FirebaseFirestore.instance.collection('users');
-  if (currentUser == null) return;
   try {
     await userCollection.doc(currentUser.uid).update({
-      "likedUsers": FieldValue.arrayUnion([otherUser.uid]),
+      "likedUsers": FieldValue.arrayUnion([otherUser.uid])
     });
-    final otherUserDoc = await userCollection.doc(otherUser.uid!).get();
-    final otherUserFromMap = otherUserDoc.data() as Map<String, dynamic>;
-    final otherUserFromFirestore = mememates.User.fromMap(otherUserFromMap);
-    final hasLiked =
-        otherUserFromFirestore.likedUsers.contains(currentUser.uid);
-    final match = Match(
-      userId: currentUser.uid,
-      hasLiked: hasLiked,
-      hasSentMeme: false,
-    );
-    await userCollection.doc(otherUser.uid).update(
-      {
-        'matches': FieldValue.arrayUnion([match.toMap()]),
-      },
-    );
+    if (otherUser.likedUsers.contains(currentUser.uid)) {
+      await addLikeBackAndMatch(currentUser, otherUser);
+    } else {
+      final match = Match(
+        userId: currentUser.uid!,
+        hasLiked: false,
+        hasSentMeme: false,
+      );
+      await userCollection.doc(otherUser.uid).update({
+        'matches': FieldValue.arrayUnion([match.toMap()])
+      });
+    }
+    final user = await getCurrentUser();
+    return user!;
   } catch (e) {
-    print("Error updating users: $e");
+    print('Error updating users: $e');
+    return null;
+  }
+}
+
+Future<void> addLikeBackAndMatch(
+    mememates.User currentUser, mememates.User otherUser) async {
+  final userCollection = FirebaseFirestore.instance.collection('users');
+  final currentUserMatch = Match(
+    userId: otherUser.uid!,
+    hasLiked: true,
+    hasSentMeme: false,
+  );
+  final otherUserMatch = Match(
+    userId: currentUser.uid!,
+    hasLiked: true,
+    hasSentMeme: false,
+  );
+  try {
+    await userCollection.doc(currentUser.uid).update({
+      "matches": FieldValue.arrayUnion([currentUserMatch.toMap()])
+    });
+    await userCollection.doc(otherUser.uid).update({
+      "matches": FieldValue.arrayUnion([otherUserMatch.toMap()])
+    });
+  } catch (e) {
+    print('Error updating users: $e');
   }
 }
 
