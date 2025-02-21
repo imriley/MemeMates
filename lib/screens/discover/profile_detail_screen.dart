@@ -10,9 +10,11 @@ import 'package:provider/provider.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
   User user;
+  bool canPop = false;
   ProfileDetailScreen({
     super.key,
     required this.user,
+    required this.canPop,
   });
 
   @override
@@ -21,7 +23,6 @@ class ProfileDetailScreen extends StatefulWidget {
 
 class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   late AudioPlayerProvider audioPlayerProvider;
-  bool canPop = false;
   PlayerState? _playerState;
   bool isLoading = true;
 
@@ -62,7 +63,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: widget.canPop,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
           stopAnthem();
@@ -245,7 +246,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   ),
                 ],
               ),
-              canPop
+              widget.canPop
                   ? Positioned(
                       top: MediaQuery.of(context).padding.top +
                           10, // Adds padding for status bar

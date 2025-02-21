@@ -72,7 +72,10 @@ class _HomeScreenState extends State<HomeScreen>
             context,
             MaterialPageRoute(
               builder: (context) {
-                return ProfileDetailScreen(user: randomUser);
+                return ProfileDetailScreen(
+                  user: randomUser,
+                  canPop: false,
+                );
               },
             ),
           );

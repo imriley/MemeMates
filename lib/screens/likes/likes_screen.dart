@@ -125,6 +125,7 @@ class _LikesScreenState extends State<LikesScreen> {
                           fullscreenDialog: true,
                           builder: (context) => ProfileDetailScreen(
                             user: matchedUser,
+                            canPop: true,
                           ),
                         ),
                       );
