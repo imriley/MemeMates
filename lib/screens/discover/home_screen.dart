@@ -57,12 +57,25 @@ class _HomeScreenState extends State<HomeScreen>
         await updateMemeLikedUser(meme);
       }
       if (meme.likedUsers.isNotEmpty) {
-        final likedUsersExceptCurrent = meme.likedUsers
-            .where((uid) =>
-                uid != currentUser.uid ||
-                !currentUser.skippedUsers.contains(uid) ||
-                !currentUser.likedUsers.contains(uid))
-            .toList();
+        final likedUsersExceptCurrent = meme.likedUsers.where((userId) {
+          if (userId == currentUser.uid) {
+            return false;
+          }
+
+          if (currentUser.skippedUsers.contains(userId)) {
+            return false;
+          }
+
+          if (currentUser.likedUsers.contains(userId)) {
+            return false;
+          }
+
+          return true;
+        }).toList();
+        if (likedUsersExceptCurrent.isEmpty) {
+          return true;
+        }
+
         final random = Random();
         final randomIndex = random.nextInt(likedUsersExceptCurrent.length);
         final randomUserID = likedUsersExceptCurrent[randomIndex];
@@ -79,6 +92,8 @@ class _HomeScreenState extends State<HomeScreen>
               },
             ),
           );
+        } else {
+          return true;
         }
       }
     }
