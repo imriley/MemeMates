@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:mememates/models/User.dart';
 import 'package:mememates/utils/providers/audio_player_provider.dart';
+import 'package:mememates/utils/storage/firestore.dart';
 import 'package:provider/provider.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
@@ -98,7 +99,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                               backgroundColor: Colors.white,
                               iconColor: Colors.orange,
                               onTap: () async {
-                                // await widget.onDislike();
+                                await removeLikeAndMatch(widget.user);
                                 Navigator.pop(context, true);
                               },
                             ),
@@ -108,8 +109,8 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                               iconColor: Colors.white,
                               size: 64,
                               onTap: () async {
-                                // await widget.onLike();
-                                // Navigator.of(context).pop();
+                                await updateLikesAndMatches(widget.user);
+                                Navigator.of(context).pop();
                               },
                             ),
                             _buildActionButton(
