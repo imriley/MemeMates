@@ -1,2 +1,0 @@
-C:/Users/vishh/Documents/Visual Studio Code/MemeMates/android/app/.cxx/Debug/1p1f351c/x86/CMakeFiles/edit_cache.dir
-C:/Users/vishh/Documents/Visual Studio Code/MemeMates/android/app/.cxx/Debug/1p1f351c/x86/CMakeFiles/rebuild_cache.dir
