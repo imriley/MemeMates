@@ -8,7 +8,8 @@ import 'package:mememates/screens/discover/profile_detail_screen.dart';
 import 'package:mememates/utils/storage/firestore.dart';
 
 class LikesScreen extends StatefulWidget {
-  const LikesScreen({super.key});
+  final Function(int) updateMatchesCount;
+  const LikesScreen({super.key, required this.updateMatchesCount});
 
   @override
   State<LikesScreen> createState() => _LikesScreenState();
@@ -36,8 +37,14 @@ class _LikesScreenState extends State<LikesScreen> {
   Future<void> _loadMatches() async {
     final currentUser = await getCurrentUser();
     if (currentUser == null) return;
-    final unlikedMatches =
-        currentUser.matches.where((match) => !match.hasLiked).toList();
+    print(currentUser.matches);
+    final unlikedMatches = currentUser.matches.where((match) {
+      print(match.hasLiked);
+      if (match.hasLiked == true) {
+        return false;
+      }
+      return true;
+    }).toList();
     if (unlikedMatches.isNotEmpty) {
       final matchedUserIds =
           unlikedMatches.map((match) => match.userId).toList();
@@ -49,6 +56,7 @@ class _LikesScreenState extends State<LikesScreen> {
               .map((doc) => mememates.User.fromMap(doc.data()))
               .toList();
         });
+        widget.updateMatchesCount(matches.length);
       } catch (e) {
         print('Error fetching matches: $e');
       }
@@ -56,6 +64,7 @@ class _LikesScreenState extends State<LikesScreen> {
       setState(() {
         matches = [];
       });
+      widget.updateMatchesCount(matches.length);
     }
   }
 
@@ -86,6 +95,7 @@ class _LikesScreenState extends State<LikesScreen> {
           setState(() {
             matches.addAll(newUsers);
           });
+          widget.updateMatchesCount(matches.length);
         } catch (e) {
           print('Error fetching new users: $e');
         }
@@ -108,16 +118,18 @@ class _LikesScreenState extends State<LikesScreen> {
           horizontal: 16,
         ),
         child: matches.isEmpty
-            ? Center(
-                child: Text(
-                  "When someone likes your profile, you'll find them here!",
+            ? const Center(child: Text('No matches yet'))
+            : GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 0.75,
                 ),
-              )
-            : ListView.builder(
                 itemCount: matches.length,
                 itemBuilder: (context, index) {
                   final matchedUser = matches[index];
-                  return ListTile(
+                  return GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
@@ -130,12 +142,32 @@ class _LikesScreenState extends State<LikesScreen> {
                         ),
                       );
                     },
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(matchedUser.profileImageUrl ?? ""),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          image: NetworkImage(matchedUser.profileImageUrl!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            bottom: 8,
+                            left: 16,
+                            right: 8,
+                            child: Text(
+                              "${matchedUser.name}, ${matchedUser.age}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                    title: Text(matchedUser.name ?? ""),
                   );
                 },
               ),

@@ -5,6 +5,8 @@ import 'package:mememates/screens/discover/home_screen.dart';
 import 'package:mememates/screens/likes/likes_screen.dart';
 import 'package:mememates/screens/messaging/chats_screen.dart';
 import 'package:mememates/screens/premium/premium_features_screen.dart';
+import 'package:mememates/utils/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,13 +17,31 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  int _newMatchCount = 0;
+
+  void updateMatchesCount(int count) {
+    setState(() {
+      _newMatchCount = count;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    setState(() {
+      _newMatchCount = userProvider.user!.matches.length;
+    });
+  }
 
   Widget _buildPage(int index) {
     switch (index) {
       case 0:
         return HomeScreen();
       case 1:
-        return LikesScreen();
+        return LikesScreen(
+          updateMatchesCount: updateMatchesCount,
+        );
       case 2:
         return ChatsScreen();
       case 3:
@@ -77,9 +97,36 @@ class _MainScreenState extends State<MainScreen> {
               label: "Discover",
             ),
             NavigationDestination(
-              icon: Icon(
-                IconsaxOutline.lovely,
-                size: 28,
+              icon: Stack(
+                children: [
+                  Icon(
+                    IconsaxOutline.lovely,
+                    size: 28,
+                  ),
+                  if (_selectedIndex != 1 && _newMatchCount > 0)
+                    Positioned(
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 12,
+                          minHeight: 12,
+                        ),
+                        child: Text(
+                          '$_newMatchCount',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
               ),
               selectedIcon: Icon(
                 IconsaxBold.lovely,
