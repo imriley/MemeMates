@@ -1,21 +1,34 @@
 class Meme {
   String url;
-  List<String> likedUsers;
+  List<String> femaleLikedUsers;
+  List<String> maleLikedUsers;
 
-  Meme({required this.url, this.likedUsers = const []});
+  Meme({
+    required this.url,
+    this.femaleLikedUsers = const [],
+    this.maleLikedUsers = const [],
+  });
 
   Map<String, dynamic> toMap() {
-    return {'url': url, 'likedUsers': likedUsers};
+    return {
+      'url': url,
+      'femaleLikedUsers': femaleLikedUsers,
+      'maleLikedUsers': maleLikedUsers
+    };
   }
 
   factory Meme.fromMap(Map<String, dynamic> map) {
-    List<dynamic> dynamicList = map['likedUsers'] ?? [];
-    List<String> stringList =
-        dynamicList.map((item) => item.toString()).toList();
+    List<dynamic> femaleDynamicList = map['femaleLikedUsers'] ?? [];
+    List<String> femaleStringList =
+        femaleDynamicList.map((item) => item.toString()).toList();
+    List<dynamic> maleDynamicList = map['maleLikedUsers'] ?? [];
+    List<String> maleStringList =
+        maleDynamicList.map((item) => item.toString()).toList();
 
     return Meme(
       url: map['url'],
-      likedUsers: stringList,
+      femaleLikedUsers: femaleStringList,
+      maleLikedUsers: maleStringList,
     );
   }
 }
