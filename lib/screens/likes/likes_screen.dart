@@ -118,7 +118,18 @@ class _LikesScreenState extends State<LikesScreen> {
           horizontal: 16,
         ),
         child: matches.isEmpty
-            ? const Center(child: Text('No matches yet'))
+            ? const Center(
+                child: SizedBox(
+                  width: 300,
+                  child: Text(
+                    "When someone likes your profile, you'll find them here!",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
             : GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
