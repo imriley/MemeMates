@@ -14,6 +14,15 @@ class User {
   int? preferenceAgeMin;
   int? preferenceAgeMax;
   List<String> interests;
+  String? pronouns;
+  String? work;
+  String? college;
+  String? hometown;
+  String? datingGoals;
+  String? religiousBeliefs;
+  String? height;
+  String? drinking;
+  String? smoking;
   String? profileImageUrl;
   MoodBoard? moodBoard;
   String? profileMusicTitle;
@@ -35,6 +44,15 @@ class User {
     this.preferenceAgeMin,
     this.preferenceAgeMax,
     this.interests = const [],
+    this.pronouns,
+    this.work,
+    this.college,
+    this.hometown,
+    this.datingGoals,
+    this.religiousBeliefs,
+    this.height,
+    this.drinking,
+    this.smoking,
     this.profileImageUrl,
     this.moodBoard,
     this.profileMusicTitle,
@@ -58,6 +76,15 @@ class User {
       'preferenceAgeMin': preferenceAgeMin,
       'preferenceAgeMax': preferenceAgeMax,
       'interests': interests,
+      'pronouns': pronouns,
+      'work': work,
+      'college': college,
+      'hometown': hometown,
+      'datingGoals': datingGoals,
+      'religiousBeliefs': religiousBeliefs,
+      'height': height,
+      'drinking': drinking,
+      'smoking': smoking,
       'profileImageUrl': profileImageUrl,
       'moodBoard': moodBoard?.toMap(),
       'profileMusicTitle': profileMusicTitle,
@@ -84,6 +111,15 @@ class User {
       preferenceAgeMin: map['preferenceAgeMin'],
       preferenceAgeMax: map['preferenceAgeMax'],
       interests: List<String>.from(map['interests']),
+      pronouns: map['pronouns'],
+      work: map['work'],
+      college: map['college'],
+      hometown: map['hometown'],
+      datingGoals: map['datingGoals'],
+      religiousBeliefs: map['religiousBeliefs'],
+      height: map['height'],
+      drinking: map['drinking'],
+      smoking: map['smoking'],
       profileImageUrl: map['profileImageUrl'],
       moodBoard:
           map['moodBoard'] != null ? MoodBoard.fromMap(map['moodBoard']) : null,
@@ -120,6 +156,15 @@ class User {
     int? preferenceAgeMin,
     int? preferenceAgeMax,
     List<String>? interests,
+    String? pronouns,
+    String? work,
+    String? college,
+    String? hometown,
+    String? datingGoals,
+    String? religiousBeliefs,
+    String? height,
+    String? drinking,
+    String? smoking,
     String? profileImageUrl,
     MoodBoard? moodBoard,
     String? profileMusicTitle,
@@ -141,6 +186,15 @@ class User {
       preferenceAgeMin: preferenceAgeMin ?? this.preferenceAgeMin,
       preferenceAgeMax: preferenceAgeMax ?? this.preferenceAgeMax,
       interests: interests ?? this.interests,
+      pronouns: pronouns ?? this.pronouns,
+      work: work ?? this.work,
+      college: college ?? this.college,
+      hometown: hometown ?? this.hometown,
+      datingGoals: datingGoals ?? this.datingGoals,
+      religiousBeliefs: religiousBeliefs ?? this.religiousBeliefs,
+      height: height ?? this.height,
+      drinking: drinking ?? this.drinking,
+      smoking: smoking ?? this.smoking,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       moodBoard: moodBoard ?? this.moodBoard,
       profileMusicTitle: profileMusicTitle ?? this.profileMusicTitle,
@@ -155,6 +209,6 @@ class User {
 
   @override
   String toString() {
-    return 'User{uid: $uid, email: $email, name: $name, isEmailVerified: $isEmailVerified, dateOfBirth: $dateOfBirth, age: $age, gender: $gender, preferenceGender: $preferenceGender, preferenceAgeMin: $preferenceAgeMin, preferenceAgeMax: $preferenceAgeMax, interests: $interests, profileImageUrl: $profileImageUrl, moodBoard: $moodBoard, profileMusicTitle: $profileMusicTitle, profileMusicThumbnailUrl: $profileMusicThumbnailUrl, profileMusicArtist: $profileMusicArtist, likedUsers: $likedUsers, skippedUsers: $skippedUsers, matches: $matches}';
+    return 'User{uid: $uid, email: $email, name: $name, isEmailVerified: $isEmailVerified, dateOfBirth: $dateOfBirth, age: $age, gender: $gender, preferenceGender: $preferenceGender, preferenceAgeMin: $preferenceAgeMin, preferenceAgeMax: $preferenceAgeMax, interests: $interests, pronouns: $pronouns, work: $work, college: $college, hometown: $hometown, datingGoals: $datingGoals, religiousBeliefs: $religiousBeliefs, height: $height, drinking: $drinking, smoking: $smoking, profileImageUrl: $profileImageUrl, moodBoard: $moodBoard, profileMusicTitle: $profileMusicTitle, profileMusicThumbnailUrl: $profileMusicThumbnailUrl, profileMusicArtist: $profileMusicArtist, likedUsers: $likedUsers, skippedUsers: $skippedUsers, matches: $matches}';
   }
 }
