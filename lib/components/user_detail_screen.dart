@@ -242,7 +242,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 const SizedBox(width: 8),
                 const Icon(
                   Icons.chevron_right,
-                  color: Colors.black,
+                  color: Color(0xFFE94057),
                   size: 20,
                 ),
               ],
