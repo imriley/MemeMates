@@ -53,11 +53,19 @@ class _HomeScreenState extends State<HomeScreen>
     }
     if (direction.name == 'right') {
       final currentUser = userProvider.user!;
-      if (!meme.likedUsers.contains(currentUser.uid)) {
-        await updateMemeLikedUser(meme);
+      final currentLikedUsers = currentUser.gender == 'man'
+          ? meme.maleLikedUsers
+          : meme.femaleLikedUsers;
+      if (!currentLikedUsers.contains(currentUser.uid)) {
+        await updateMemeLikedUser(meme, currentUser);
       }
-      if (meme.likedUsers.isNotEmpty) {
-        final likedUsersExceptCurrent = meme.likedUsers.where((userId) {
+      final currentUserPreferences = currentUser.preferenceGender == 'man'
+          ? meme.maleLikedUsers
+          : currentUser.preferenceGender == 'woman'
+              ? meme.femaleLikedUsers
+              : meme.maleLikedUsers + meme.femaleLikedUsers;
+      if (currentUserPreferences.isNotEmpty) {
+        final likedUsersExceptCurrent = currentUserPreferences.where((userId) {
           if (userId == currentUser.uid) {
             return false;
           }

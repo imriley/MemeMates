@@ -19,7 +19,7 @@ Future<void> addUser(mememates.User user) async {
   }
 }
 
-Future<void> updateMemeLikedUser(Meme meme) async {
+Future<void> updateMemeLikedUser(Meme meme, mememates.User user) async {
   final currentUser = FirebaseAuth.instance.currentUser;
   final memeCollection = FirebaseFirestore.instance.collection('memes');
   if (currentUser == null) {
@@ -31,8 +31,10 @@ Future<void> updateMemeLikedUser(Meme meme) async {
     if (memeQuerySnapshot.docs.isNotEmpty) {
       final memeDoc = memeQuerySnapshot.docs.first;
       final memeRef = memeDoc.reference;
+      final field =
+          user.gender == 'man' ? 'maleLikedUsers' : 'femaleLikedUsers';
       await memeRef.update({
-        'likedUsers': FieldValue.arrayUnion([currentUser.uid]),
+        field: FieldValue.arrayUnion([currentUser.uid]),
       });
     }
   } catch (e) {
