@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mememates/components/user_detail_screen.dart';
 import 'package:mememates/models/User.dart';
 import 'package:mememates/utils/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +47,15 @@ class _TopAppBarState extends State<TopAppBar> {
       ),
       actions: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                fullscreenDialog: true,
+                builder: (context) => UserDetailScreen(),
+              ),
+            );
+          },
           child: profileImageUrl == ''
               ? CircleAvatar()
               : CircleAvatar(
