@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:mememates/components/meme_card.dart';
 import 'package:mememates/models/Meme.dart';
 import 'package:mememates/screens/discover/profile_detail_screen.dart';
 import 'package:mememates/utils/providers/user_provider.dart';
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
   List<Meme> memes = [];
+  List<Widget> cards = [];
   bool isLoading = false;
   late UserProvider userProvider =
       Provider.of<UserProvider>(context, listen: false);
@@ -31,6 +33,25 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black),
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: Colors.white,
+      behavior: SnackBarBehavior.floating,
+      width: 100,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      duration: Duration(milliseconds: 1500),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      snackBar,
+    );
+  }
+
   Future<void> fetchMemes() async {
     setState(() {
       isLoading = true;
@@ -38,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen>
     final response = await fetchAllMemes();
     setState(() {
       memes = response;
+      cards = memes.map((meme) => MemeCard(meme: meme)).toList();
       isLoading = false;
     });
   }
@@ -49,9 +71,10 @@ class _HomeScreenState extends State<HomeScreen>
   ) async {
     final meme = memes[previousIndex];
     if (direction.name == 'left') {
-      // handle dislike
+      showSnackBar(context, "Skipped");
     }
     if (direction.name == 'right') {
+      showSnackBar(context, "Liked");
       final currentUser = userProvider.user!;
       final currentLikedUsers = currentUser.gender == 'man'
           ? meme.maleLikedUsers
@@ -108,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen>
     if (currentIndex == null) {
       setState(() {
         memes = [];
+        cards = [];
       });
     }
 
@@ -132,15 +156,15 @@ class _HomeScreenState extends State<HomeScreen>
                   children: [
                     Expanded(
                       child: CardSwiper(
-                        numberOfCardsDisplayed: 1,
+                        numberOfCardsDisplayed: 2,
                         allowedSwipeDirection: AllowedSwipeDirection.symmetric(
                           horizontal: true,
                           vertical: false,
                         ),
                         cardsCount: memes.length,
-                        backCardOffset: Offset(40, 40),
+                        backCardOffset: Offset(20, 20),
                         scale: 0.9,
-                        maxAngle: 90,
+                        maxAngle: 30,
                         isLoop: false,
                         onSwipe: handleSwipe,
                         cardBuilder: (
@@ -149,45 +173,7 @@ class _HomeScreenState extends State<HomeScreen>
                           horizontalThresholdPercentage,
                           verticalThresholdPercentage,
                         ) {
-                          final meme = memes[index];
-                          return Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.05),
-                                      spreadRadius: 2,
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.grey.withValues(alpha: 0.2),
-                                      Colors.grey.withValues(alpha: 0.7),
-                                    ],
-                                    stops: const [0.7, 1.0],
-                                  ),
-                                ),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(meme.url),
-                                      fit: BoxFit.fitWidth,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
+                          return cards[index];
                         },
                       ),
                     ),
